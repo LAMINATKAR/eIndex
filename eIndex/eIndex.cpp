@@ -4,23 +4,32 @@
 #include "eIndex.h"
 #include <stdio.h>
 #include <string.h>
+#include "funkcie.h"
 #include <stdlib.h>
 #include "db.h"
 
 #define DB_FILENAME "db.bin"
 
+void vycistenie();
 int overenie(char usnm[50]);
 int vyber_predmetu(char predmet[5][50]);
+void zapis_znamok(char predmet[5][50], char predmet_txt[5][50], int vybr_predmet);
 
 
 //using namespace std;
 
 int main()
 {
-	//main kod hali
 
     char us_name[50];
-    char predmet[6][50] = { "BPC-MAT1", "BPC-ZKR", "BPC-PC1T", "BPC-KOM", "BPC-PNA", "\0" };
+    char predmet[6][50] = {
+	    "BPC-MAT1",
+    	"BPC-ZKR",
+    	"BPC-PC1T",
+    	"BPC-KOM",
+    	"BPC-PNA",
+    	"\0"
+    };
     //char predmet_txt[6][50] = { "../../../BPC-MAT1.txt", "../../../BPC-ZKR.txt", "../../../BPC-PC1T.txt", "../../../BPC-KOM.txt", "../../../BPC-PNA.txt", "\0" };
 	char predmet_txt[6][50] = {
 		"BPC-MAT1.txt",
@@ -31,184 +40,54 @@ int main()
 		"\0"
 	};
 
-
-
 	printf("\n=== ELEKTRONICKY INDEX ===\n");
-	//printf("Zadajte prihlasovacie meno: ");
-    //scanf_s("%s", us_name);
-
 
     if (overenie(us_name)) {
-        //neuspesne prihlasenie
-        return 0;
+        return 0; // neuspesne prihlasenie
     }
 
-    int vybr_predmet = vyber_predmetu(predmet);
+    //int vybr_predmet = vyber_predmetu(predmet);
+	//zapis_znamok(predmet, predmet_txt, vybr_predmet);
 
-    //printf("%s", predmet[vybr_predmet-1]);
+	int rezim = 0;
+	while (1) {
+		printf("Vyberte rezim:\n");
+		printf("1. Rezim editacie\n");
+		printf("2. Rezim zobrazenia\n");
+		printf("0. Ukoncit program\n");
+		printf("Volba: ");
+		scanf_s("%d", &rezim);
 
-    FILE* fptr;
+		if (rezim == 1) {
+			vycistenie();
+			int editovanie = 1;
+			while (editovanie) {
+				int vybr_predmet = vyber_predmetu(predmet);
+				zapis_znamok(predmet, predmet_txt, vybr_predmet);
 
-    fptr = fopen(predmet_txt[vybr_predmet - 1], "r");
-    char buff[50];
-    int id = 1;
-
-    char* student = NULL;
-    char* cviceni = NULL;
-    char* testy = NULL;
-    char* skuska = NULL;
-    char* stud_id_string = NULL;
-
-
-    while (fgets(buff, 50, fptr)) {
-
-        buff[strcspn(buff, "\n")] = 0;
-
-        student = strtok(buff, ":");
-        cviceni = strtok(NULL, ":");
-        testy = strtok(NULL, ":");
-        skuska = strtok(NULL, ":");
-
-        printf("%d)Student: %s, Cvicenia: %s, Testy: %s, Skuska: %s\n", id, student, cviceni, testy, skuska);
-
-        id++;
-    }
-
-    printf("\n");
-
-
-    int cviceni_int = 0;
-    int testy_int = 0;
-    int skuska_int = 0;
-    int stud_id_int = 0;
-    int student_id = 0;
-
-
-    printf("Vyberte studenta, ktoremu chcete zapisat body: ");
-    scanf("%d", &student_id);
-
-    //znova citanie suboru od zaciatku
-    rewind(fptr);
-    id = 1;
-
-    while (fgets(buff, 50, fptr)) {
-
-        buff[strcspn(buff, "\n")] = 0;
-
-        student = strtok(buff, ":");
-        cviceni = strtok(NULL, ":");
-        testy = strtok(NULL, ":");
-        skuska = strtok(NULL, ":");
-        stud_id_string = strtok(NULL, ":");
-        //premenna na int
-        stud_id_int = atoi(stud_id_string);
-        cviceni_int = atoi(cviceni);
-        testy_int = atoi(testy);
-        skuska_int = atoi(skuska);
-
-        //printf("mali by byt integers:::%d)Student: %s Cvicenia: %d, Testy: %d, Skuska: %d\n",id ,student, cviceni_int, testy_int, skuska_int);
-
-
-        if (student_id == stud_id_int) {
-
-            printf("Vybrali ste: %d)Student: %s\n", stud_id_int, student);
-            break;
-        }
-
-        id++;
-    }
-
-    //printf("\n--mali by byt integers:::%d)Student: %s Cvicenia: %d, Testy: %d, Skuska: %d\n--",id ,student, cviceni_int, testy_int, skuska_int);
-
-    printf("\nrychly debug--%d--\n", stud_id_int);
-
-
-    int body_volba = 0;
-    printf("Chcete pridat body za: \n1.cvicenie \n2.test \n3.skusku\n? ");
-    scanf("%d", &body_volba);
-    printf("\n");
-
-    int pocet_bodov = 0;
-
-    printf("Kolko bodov chcete pripisat?: ");
-    scanf("%d", &pocet_bodov);
-
-    switch (body_volba) {
-
-    case 1:
-        cviceni_int += pocet_bodov;
-        break;
-
-    case 2:
-        testy_int = testy_int + pocet_bodov;
-        break;
-
-    case 3:
-        skuska_int += pocet_bodov;
-        break;
-
-    }
-
-    printf("\nnove hodnoty len docasne:::%d)Student: %s  Cvicenia: %d, Testy: %d, Skuska: %d\n", stud_id_int, student, cviceni_int, testy_int, skuska_int);
-    printf("naozaj chcete uskutocnit zmeny?");
-    fclose(fptr);
-
-
-    return 0;
-
-
-	//main kod marek
-
-	/*Databaza db;
-	db.pocetUcit = 0;
-
-	if (load_db(&db, DB_FILENAME)) {
-		printf("\n=== ELEKTRONICKY INDEX ===\n");
-		printf("Zadajte prihlasovacie meno: ");
-		char meno[MAX_MENO];
-		scanf(" %[^\n]s", meno);
-
-		int idt = najdi_ucitela(&db, meno); // ulozime id ucitela ktory sa prihlasil do premennej ID Teacher (idt)
-		if (idt == -1) {
-			printf("Ucitel '%s' neexistuje. Pre vytvorenie uctu kontaktujte administratora.", meno);
-			/*int a; scanf("%d", &a);
-			if (a == 1) {
-				strcpy(db.ucitelia[db.pocetUcit].meno_ucitela, meno); // predvyplnit meno
-				int newIdx = vytvorenie_uzivatela(&db);
-				if (newIdx >= 0) {
-					uloz_databazu(&db, DB_FILENAME);
-					UI_vyber_predmet_a_pracuj(&db.ucitelia[newIdx]);
-				}
-			} else {
-				printf("Spat do prihlasenia.\n");
-			}*/
-		/*/} else {
-			printf("%s úspešne prihlásený!\n", db.ucitelia[idt].meno_ucitela);
-			UI_vyber_predmet_a_pracuj(&db.ucitelia[idt]);
-			save_db(&db, DB_FILENAME); // po ukonceni prace ucitela sa ulozi db
+				printf("\nChcete pokracovat v editacii? (1 = ano, 0 = spat do vyberu rezimu): ");
+				scanf_s("%d", &editovanie);
+				vycistenie();
+			}
 		}
-
-	} else {
-		printf("Nepodarilo sa nacitat databazu. Program nebude spusteny.\n");
+		else if (rezim == 2) {
+			printf("Zatial nemame :)\n\n");
+		}
+		else if (rezim == 0) {
+			printf("Koniec programu.\n");
+			break;
+		}
+		else {
+			printf("Neplatna volba, skuste znova.\n");
+		}
 	}
-
-	return 0;*/
+    return 0;
 }
-/*
-void InicializujUcitel(Databaza *db) {
-	printf("Zadajte svoje meno: ");
-	scanf(" %[^\n]s", db->ucitel);
-	printf("Kolko predmetov budete spravovat? ");
-	scanf("%d", &db->pocetPredmetov);
 
-	for(int i=0;i<db->pocetPredmetov;i++){
-		printf("Nazov predmetu %d: ", i+1);
-		scanf(" %[^\n]s", db->predmety[i].nazov);
-	}
-
-	db->pocetStudentov = 0;
+void vycistenie() {
+	system("cls");
+	printf("\n=== ELEKTRONICKY INDEX ===\n\n");
 }
-*/
 
 int overenie(char usnm[50])
 {
@@ -267,17 +146,114 @@ int vyber_predmetu(char predmet[5][50]) {
 		for (int i = 0; i < 5; i++) {
 			printf("%d) %s\n", i + 1, predmet[i]);
 		}
-
+		printf("Volba: ");
 		scanf_s("%d", &volba_predm);
 
 		if (volba_predm <= 0 || volba_predm > 5) {
 			printf("Nespravna volba! Skuste znova.\n\n");
 		}
 		else {
-			printf("Vybrany predmet: %s.\n", predmet[volba_predm - 1]);
+			//printf("Vybrany predmet: %s.\n", predmet[volba_predm - 1]);
 			break; // ukonci while(1)
 		}
 	}
 
-	return volba_predm;
+	vycistenie();
+	return volba_predm-1;
+}
+
+void zapis_znamok(char predmety[5][50], char predmety_txt[5][50], int predmet) {
+
+	printf("Vybrany predmet: %s\n", predmety[predmet]);
+
+	FILE* fptr;
+    fptr = fopen(predmety_txt[predmet], "r");
+    char buff[50];
+    int id = 1;
+
+    char* student = NULL;
+    char* cviceni = NULL;
+    char* testy = NULL;
+    char* skuska = NULL;
+    char* stud_id_string = NULL;
+
+
+	//vypis studentov
+    while (fgets(buff, 50, fptr)) {
+        buff[strcspn(buff, "\n")] = 0;
+
+    	//parsovanie podla :
+        student = strtok(buff, ":");
+        cviceni = strtok(NULL, ":");
+        testy = strtok(NULL, ":");
+        skuska = strtok(NULL, ":");
+
+        printf("%d) Student: %s, Cvicenia: %s, Testy: %s, Skuska: %s\n", id, student, cviceni, testy, skuska);
+        id++;
+    }
+
+    int cviceni_int = 0;
+    int testy_int = 0;
+    int skuska_int = 0;
+    int stud_id_int = 0;
+    int student_id = 0;
+
+    printf("\nVyberte studenta, ktoremu chcete zapisat body: ");
+    scanf_s("%d", &student_id);
+    rewind(fptr); // znova citanie suboru od zaciatku
+    id = 1;
+
+    while (fgets(buff, 50, fptr)) {
+
+        buff[strcspn(buff, "\n")] = 0;
+
+    	// parsovanie podla :
+        student = strtok(buff, ":");
+        cviceni = strtok(NULL, ":");
+        testy = strtok(NULL, ":");
+        skuska = strtok(NULL, ":");
+        stud_id_string = strtok(NULL, ":");
+
+        // konverzia na na int
+        stud_id_int = atoi(stud_id_string);
+        cviceni_int = atoi(cviceni);
+        testy_int = atoi(testy);
+        skuska_int = atoi(skuska);
+
+        //printf("mali by byt integers:::%d)Student: %s Cvicenia: %d, Testy: %d, Skuska: %d\n",id ,student, cviceni_int, testy_int, skuska_int);
+
+        if (student_id == stud_id_int) {
+            printf("Vybrali ste: %d) Student: %s\n\n", stud_id_int, student);
+            break;
+        }
+
+        id++;
+    }
+
+    //printf("\n--mali by byt integers:::%d)Student: %s Cvicenia: %d, Testy: %d, Skuska: %d\n--",id ,student, cviceni_int, testy_int, skuska_int);
+    //printf("\nrychly debug--%d--\n", stud_id_int);
+
+    int body_volba = 0;
+    printf("Pridat body za: \n1.cvicenie \n2.test \n3.skusku\nVolba: ");
+    scanf_s("%d", &body_volba);
+
+    int pocet_bodov = 0;
+
+    printf("\nKolko bodov chcete pridat?: ");
+    scanf_s("%d", &pocet_bodov);
+
+    switch (body_volba) {
+    case 1:
+        cviceni_int += pocet_bodov;
+        break;
+    case 2:
+        testy_int += pocet_bodov;
+        break;
+    case 3:
+        skuska_int += pocet_bodov;
+        break;
+    }
+
+    printf("\nnove hodnoty len docasne:::%d)Student: %s  Cvicenia: %d, Testy: %d, Skuska: %d\n", stud_id_int, student, cviceni_int, testy_int, skuska_int);
+    fclose(fptr);
 }
