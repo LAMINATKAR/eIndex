@@ -9,10 +9,20 @@
 const int POCET_PREDMET = 6;
 const int DLZKA_STRING = 50;
 
+char urci_znamku(float percenta) {
+	if (percenta >= 90) return 'A';
+	else if (percenta >= 80) return 'B';
+	else if (percenta >= 70) return 'C';
+	else if (percenta >= 60) return 'D';
+	else if (percenta >= 50) return 'E';
+	else return 'F';
+}
+
 void vycistenie();
 int overenie(char usnm[DLZKA_STRING]);
 int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]);
 void zapis_znamok(char predmet[POCET_PREDMET][DLZKA_STRING], char predmet_txt[POCET_PREDMET][DLZKA_STRING], int vybr_predmet);
+void zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int vybr_predmet);
 
 //using namespace std;
 
@@ -44,9 +54,6 @@ int main()
         return 0; // neuspesne prihlasenie
     }
 
-    //int vybr_predmet = vyber_predmetu(predmet);
-	//zapis_znamok(predmet, predmet_txt, vybr_predmet);
-
 	int rezim = 0;
 	while (1) {
 		printf("Vyberte rezim:\n");
@@ -59,8 +66,8 @@ int main()
 		if (rezim == 1) {
 			vycistenie();
 			int editovanie = 1;
+			int vybr_predmet = vyber_predmetu(predmet);
 			while (editovanie) {
-				int vybr_predmet = vyber_predmetu(predmet);
 				zapis_znamok(predmet, predmet_txt, vybr_predmet);
 
 				printf("\nChcete pokracovat v editacii? (1 = ano, 0 = spat do vyberu rezimu): ");
@@ -69,7 +76,10 @@ int main()
 			}
 		}
 		else if (rezim == 2) {
-			printf("Zatial nemame :)\n\n");
+			vycistenie();
+			int zobrazovanie = 1;
+			int vybr_predmet = vyber_predmetu(predmet);
+			zobraz_vysledky(predmet, predmet_txt, vybr_predmet);
 		}
 		else if (rezim == 0) {
 			printf("Koniec programu.\n");
@@ -140,14 +150,14 @@ int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
 	int volba_predm = 0;
 
 	while (1) {
-		printf("Zadajte cislo predmetu, do ktoreho chcete zadavat body: \n");
-		for (int i = 0; i < POCET_PREDMET; i++) {
+		printf("Zadajte cislo predmetu ktory chcete otvorit: \n");
+		for (int i = 0; i < POCET_PREDMET-1; i++) {
 			printf("%d) %s\n", i + 1, predmet[i]);
 		}
 		printf("Volba: ");
 		scanf_s("%d", &volba_predm);
 
-		if (volba_predm <= 0 || volba_predm > POCET_PREDMET) {
+		if (volba_predm <= 0 || volba_predm > POCET_PREDMET-1) {
 			printf("Nespravna volba! Skuste znova.\n\n");
 		}
 		else {
@@ -161,43 +171,51 @@ int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
 }
 
 void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int predmet) {
-
 	printf("Vybrany predmet: %s\n", predmety[predmet]);
 
 	FILE* fptr;
-    fptr = fopen(predmety_txt[predmet], "r");
-    char buff[DLZKA_STRING];
-    int id = 1;
+	fptr = fopen(predmety_txt[predmet], "r");
+	char buff[DLZKA_STRING];
+	int id = 1;
 
-    char* student = NULL;
-    char* cviceni = NULL;
-    char* testy = NULL;
-    char* skuska = NULL;
-    char* stud_id_string = NULL;
+	char* student = NULL;
+	char* cviceni = NULL;
+	char* testy = NULL;
+	char* skuska = NULL;
+	char* stud_id_string = NULL;
 
 
 	//vypis studentov
-    while (fgets(buff, DLZKA_STRING, fptr)) {
-        buff[strcspn(buff, "\n")] = 0;
+	while (fgets(buff, DLZKA_STRING, fptr)) {
+		buff[strcspn(buff, "\n")] = 0;
 
-    	//parsovanie podla :
-        student = strtok(buff, ":");
-        cviceni = strtok(NULL, ":");
-        testy = strtok(NULL, ":");
-        skuska = strtok(NULL, ":");
+		//parsovanie podla :
+		student = strtok(buff, ":");
+		cviceni = strtok(NULL, ":");
+		testy = strtok(NULL, ":");
+		skuska = strtok(NULL, ":");
 
-        printf("%d) Student: %s, Cvicenia: %s, Testy: %s, Skuska: %s\n", id, student, cviceni, testy, skuska);
-        id++;
-    }
+		printf("%d) Student: %s, Cvicenia: %s, Testy: %s, Skuska: %s\n", id, student, cviceni, testy, skuska);
+		id++;
+	}
 
-    int cviceni_int = 0;
-    int testy_int = 0;
-    int skuska_int = 0;
-    int stud_id_int = 0;
-    int student_id = 0;
+	int cviceni_int = 0;
+	int testy_int = 0;
+	int skuska_int = 0;
+	int stud_id_int = 0;
+	int student_id = 0;
 
-    printf("\nVyberte studenta, ktoremu chcete zapisat body: ");
-    scanf_s("%d", &student_id);
+	while (1) {
+		printf("\nVyberte studenta, ktoremu chcete zapisat body: ");
+		scanf_s("%d", &student_id);
+		if (student_id == 0 || student_id > id-1) {
+			printf("Nespravna volba! Skuste znova.\n");
+		}
+		else {
+			break; // ukonci while(1)
+		}
+	}
+
     rewind(fptr); // znova citanie suboru od zaciatku
     id = 1;
 
@@ -218,8 +236,6 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[
         testy_int = atoi(testy);
         skuska_int = atoi(skuska);
 
-        //printf("mali by byt integers:::%d)Student: %s Cvicenia: %d, Testy: %d, Skuska: %d\n",id ,student, cviceni_int, testy_int, skuska_int);
-
         if (student_id == stud_id_int) {
             printf("Vybrali ste: %d) Student: %s\n\n", stud_id_int, student);
             break;
@@ -228,15 +244,19 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[
         id++;
     }
 
-    //printf("\n--mali by byt integers:::%d)Student: %s Cvicenia: %d, Testy: %d, Skuska: %d\n--",id ,student, cviceni_int, testy_int, skuska_int);
-    //printf("\nrychly debug--%d--\n", stud_id_int);
-
     int body_volba = 0;
-    printf("Pridat body za: \n1.cvicenie \n2.test \n3.skusku\nVolba: ");
-    scanf_s("%d", &body_volba);
+	while (1) {
+		printf("Pridat body za: \n1.cvicenie \n2.test \n3.skusku\nVolba: ");
+		scanf_s("%d", &body_volba);
+		if (body_volba == 0 || body_volba > 3) {
+			printf("Nespravna volba! Skuste znova.\n\n");
+		}
+		else {
+			break; // ukonci while(1)
+		}
+	}
 
     int pocet_bodov = 0;
-
     printf("\nKolko bodov chcete pridat?: ");
     scanf_s("%d", &pocet_bodov);
 
@@ -252,6 +272,55 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[
         break;
     }
 
-    printf("\nnove hodnoty len docasne:::%d)Student: %s  Cvicenia: %d, Testy: %d, Skuska: %d\n", stud_id_int, student, cviceni_int, testy_int, skuska_int);
+	printf("\nBody boli uspesne pridane. Aktualizovany stav:\n");
+    printf("%d) Student: %s, Cvicenia: %d, Testy: %d, Skuska: %d\n", stud_id_int, student, cviceni_int, testy_int, skuska_int);
     fclose(fptr);
+}
+
+void zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int predmet) {
+
+	printf("Vybrany predmet: %s\n", predmety[predmet]);
+
+	FILE* fptr = fopen(predmety_txt[predmet], "r");
+	if (fptr == NULL) {
+		printf("Chyba: nepodarilo sa otvoriť súbor predmetu %s.\n", predmety[predmet]);
+		return;
+	}
+
+	char riadok[DLZKA_STRING];
+	printf("\n%-20s %-10s %-10s %-10s %-10s %-10s\n", "Meno", "Cvicenia", "Testy", "Skuska", "Percenta", "Znamka");
+	printf("--------------------------------------------------------------------------\n");
+
+	while (fgets(riadok, sizeof(riadok), fptr)) {
+		char *meno, *cvicenia, *testy, *skuska, *id_str;
+		int cvicenia_int, testy_int, skuska_int;
+		float percenta;
+		char znamka;
+
+		// rozdelenie riadku (formát: meno:cvicenia:testy:skuska:id)
+		meno = strtok(riadok, ":");
+		cvicenia = strtok(NULL, ":");
+		testy = strtok(NULL, ":");
+		skuska = strtok(NULL, ":");
+		id_str = strtok(NULL, ":");
+
+		if (meno && cvicenia && testy && skuska) {
+			cvicenia_int = atoi(cvicenia);
+			testy_int = atoi(testy);
+			skuska_int = atoi(skuska);
+
+			// Výpočet percent (napr. váhy: cvičenia 20 %, testy 30 %, skúška 50 %)
+			percenta = (cvicenia_int * 0.2f) + (testy_int * 0.3f) + (skuska_int * 0.5f);
+			znamka = urci_znamku(percenta);
+
+			printf("%-20s %-10d %-10d %-10d %-10.1f %-10c\n", meno, cvicenia_int, testy_int, skuska_int, percenta, znamka);
+		}
+	}
+
+	printf("\nPre vratenie do hlavneho menu stlacte Enter.");
+	getchar(); // zachytí starý znak '\n' z predchádzajúceho scanf
+	getchar(); // čaká na stlačenie Enter
+
+	fclose(fptr);
+	vycistenie();
 }
