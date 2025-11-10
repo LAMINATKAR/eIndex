@@ -5,24 +5,22 @@
 #include <stdio.h>
 #include <string.h>
 #include "funkcie.h"
-#include <stdlib.h>
-#include "db.h"
 
-#define DB_FILENAME "db.bin"
+const int POCET_PREDMET = 6;
+const int DLZKA_STRING = 50;
 
 void vycistenie();
-int overenie(char usnm[50]);
-int vyber_predmetu(char predmet[5][50]);
-void zapis_znamok(char predmet[5][50], char predmet_txt[5][50], int vybr_predmet);
-
+int overenie(char usnm[DLZKA_STRING]);
+int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]);
+void zapis_znamok(char predmet[POCET_PREDMET][DLZKA_STRING], char predmet_txt[POCET_PREDMET][DLZKA_STRING], int vybr_predmet);
 
 //using namespace std;
 
 int main()
 {
 
-    char us_name[50];
-    char predmet[6][50] = {
+    char us_name[DLZKA_STRING];
+    char predmet[POCET_PREDMET][DLZKA_STRING] = {
 	    "BPC-MAT1",
     	"BPC-ZKR",
     	"BPC-PC1T",
@@ -30,8 +28,8 @@ int main()
     	"BPC-PNA",
     	"\0"
     };
-    //char predmet_txt[6][50] = { "../../../BPC-MAT1.txt", "../../../BPC-ZKR.txt", "../../../BPC-PC1T.txt", "../../../BPC-KOM.txt", "../../../BPC-PNA.txt", "\0" };
-	char predmet_txt[6][50] = {
+    //char predmet_txt[POCET_PREDMET][DLZKA_STRING] = { "../../../BPC-MAT1.txt", "../../../BPC-ZKR.txt", "../../../BPC-PC1T.txt", "../../../BPC-KOM.txt", "../../../BPC-PNA.txt", "\0" };
+	char predmet_txt[POCET_PREDMET][DLZKA_STRING] = {
 		"BPC-MAT1.txt",
 		"BPC-ZKR.txt",
 		"BPC-PC1T.txt",
@@ -89,7 +87,7 @@ void vycistenie() {
 	printf("\n=== ELEKTRONICKY INDEX ===\n\n");
 }
 
-int overenie(char usnm[50])
+int overenie(char usnm[DLZKA_STRING])
 {
 	int pokusy = 0;
 
@@ -106,11 +104,11 @@ int overenie(char usnm[50])
 				return 1;
 			}
 
-			char buff[50];
+			char buff[DLZKA_STRING];
 			int status_meno = 1;
 
 			// Reading strings till fgets returns NULL
-			while (fgets(buff, 50, fptr)) {
+			while (fgets(buff, DLZKA_STRING, fptr)) {
 				buff[strcspn(buff, "\n")] = 0;
 
 				if (strcmp(buff, usnm) == 0) {
@@ -137,19 +135,19 @@ int overenie(char usnm[50])
 	}
 }
 
-int vyber_predmetu(char predmet[5][50]) {
+int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
 
 	int volba_predm = 0;
 
 	while (1) {
 		printf("Zadajte cislo predmetu, do ktoreho chcete zadavat body: \n");
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < POCET_PREDMET; i++) {
 			printf("%d) %s\n", i + 1, predmet[i]);
 		}
 		printf("Volba: ");
 		scanf_s("%d", &volba_predm);
 
-		if (volba_predm <= 0 || volba_predm > 5) {
+		if (volba_predm <= 0 || volba_predm > POCET_PREDMET) {
 			printf("Nespravna volba! Skuste znova.\n\n");
 		}
 		else {
@@ -162,13 +160,13 @@ int vyber_predmetu(char predmet[5][50]) {
 	return volba_predm-1;
 }
 
-void zapis_znamok(char predmety[5][50], char predmety_txt[5][50], int predmet) {
+void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int predmet) {
 
 	printf("Vybrany predmet: %s\n", predmety[predmet]);
 
 	FILE* fptr;
     fptr = fopen(predmety_txt[predmet], "r");
-    char buff[50];
+    char buff[DLZKA_STRING];
     int id = 1;
 
     char* student = NULL;
@@ -179,7 +177,7 @@ void zapis_znamok(char predmety[5][50], char predmety_txt[5][50], int predmet) {
 
 
 	//vypis studentov
-    while (fgets(buff, 50, fptr)) {
+    while (fgets(buff, DLZKA_STRING, fptr)) {
         buff[strcspn(buff, "\n")] = 0;
 
     	//parsovanie podla :
@@ -203,7 +201,7 @@ void zapis_znamok(char predmety[5][50], char predmety_txt[5][50], int predmet) {
     rewind(fptr); // znova citanie suboru od zaciatku
     id = 1;
 
-    while (fgets(buff, 50, fptr)) {
+    while (fgets(buff, DLZKA_STRING, fptr)) {
 
         buff[strcspn(buff, "\n")] = 0;
 
