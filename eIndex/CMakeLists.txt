@@ -20,3 +20,19 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
 endif()
 
 # TODO: Add tests and install targets if needed.
+
+
+# Nakopirovanie DB suborov do build adresara (aby isli otvorit vzdy a vsetkym)
+configure_file(${CMAKE_SOURCE_DIR}/users.txt ${CMAKE_BINARY_DIR}/users.txt COPYONLY)
+
+set(PREDMET_SUBORY
+        BPC-MAT1.txt
+        BPC-ZKR.txt
+        BPC-PC1T.txt
+        BPC-KOM.txt
+        BPC-PNA.txt
+)
+
+foreach(subor IN LISTS PREDMET_SUBORY)
+  configure_file(${CMAKE_SOURCE_DIR}/${subor} ${CMAKE_BINARY_DIR}/${subor} COPYONLY)
+endforeach()

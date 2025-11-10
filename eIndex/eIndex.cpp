@@ -17,23 +17,29 @@ int vyber_predmetu(char predmet[5][50]);
 
 int main()
 {
-
 	//main kod hali
 
     char us_name[50];
     char predmet[6][50] = { "BPC-MAT1", "BPC-ZKR", "BPC-PC1T", "BPC-KOM", "BPC-PNA", "\0" };
-    char predmet_txt[6][50] = { "../../../BPC-MAT1.txt", "../../../BPC-ZKR.txt", "../../../BPC-PC1T.txt", "../../../BPC-KOM.txt", "../../../BPC-PNA.txt", "\0" };
+    //char predmet_txt[6][50] = { "../../../BPC-MAT1.txt", "../../../BPC-ZKR.txt", "../../../BPC-PC1T.txt", "../../../BPC-KOM.txt", "../../../BPC-PNA.txt", "\0" };
+	char predmet_txt[6][50] = {
+		"BPC-MAT1.txt",
+		"BPC-ZKR.txt",
+		"BPC-PC1T.txt",
+		"BPC-KOM.txt",
+		"BPC-PNA.txt",
+		"\0"
+	};
 
 
 
+	printf("\n=== ELEKTRONICKY INDEX ===\n");
+	//printf("Zadajte prihlasovacie meno: ");
+    //scanf_s("%s", us_name);
 
-
-    printf("Vitajte v el. indexe\n");
-    printf("zadajte vase meno: ");
-    scanf("%s", us_name);
 
     if (overenie(us_name)) {
-        //pouzivatel neexistuje
+        //neuspesne prihlasenie
         return 0;
     }
 
@@ -78,7 +84,7 @@ int main()
     int student_id = 0;
 
 
-    printf("vyberte studenta, ktoremu chcete zapisat body: ");
+    printf("Vyberte studenta, ktoremu chcete zapisat body: ");
     scanf("%d", &student_id);
 
     //znova citanie suboru od zaciatku
@@ -148,10 +154,6 @@ int main()
     fclose(fptr);
 
 
-
-
-
-
     return 0;
 
 
@@ -206,80 +208,76 @@ void InicializujUcitel(Databaza *db) {
 
 	db->pocetStudentov = 0;
 }
-*//*
-void SelectSubject() {
-	printf("Vyber predmed (zadaj ID): ");
-	//scanf("%d", &predmet);
-
-	printf("Zoznam predmetov: ");
-
-}
-*//*
-void ListIndex() {
-	printf("MENO PRIEZVISKO ZNAMKY\n");
-
-}
-
-void Marking() {
-	printf("Rezim pridavania znamok");
-}
 */
 
 int overenie(char usnm[50])
 {
-	if (usnm != NULL) {
-		FILE* fptr;
-		fptr = fopen("../../../users.txt", "r");
-		char buff[50];
+	int pokusy = 0;
 
-		int status_meno = 1;
+	while (pokusy < 3) {
+		printf("Zadajte prihlasovacie meno: ");
+		scanf_s("%s", usnm);
 
-		// Reading strings till fgets returns NULL
-		while (fgets(buff, 50, fptr)) {
+		if (usnm != NULL) {
+			FILE* fptr;
+			//fptr = fopen("../../../users.txt", "r");
+			fptr = fopen("users.txt", "r");
+			if (fptr == NULL) {
+				perror("Chyba pri otvarani suboru");
+				return 1;
+			}
 
-			buff[strcspn(buff, "\n")] = 0;
+			char buff[50];
+			int status_meno = 1;
 
-			if (strcmp(buff, usnm) == 0) {
-				printf("uspesne prihlaseny ako %s\n", buff);
-				status_meno = 0;
+			// Reading strings till fgets returns NULL
+			while (fgets(buff, 50, fptr)) {
+				buff[strcspn(buff, "\n")] = 0;
+
+				if (strcmp(buff, usnm) == 0) {
+					printf("Uspesne prihlaseny ako: %s\n\n", buff);
+					status_meno = 0;
+				}
+			}
+
+			fclose(fptr);
+
+			if (status_meno) {
+				pokusy++;
+				if (pokusy < 3) {
+					printf("Prihlasenie neuspesne! (%d/3 pokusov) Skuste znova.\n\n", pokusy);
+				} else {
+					printf("Prihlasenie neuspesne! Dosiahli ste maximalny pocet pokusov (3). Program bude ukonceny.\n");
+					return 1;
+				}
+			} else {
+				//break; //meno bolo nájdené
+				return 0;
 			}
 		}
-
-		fclose(fptr);
-
-		if (status_meno) {
-			printf("neuspesne prihlasanie, pouzivatel neexistuje\n");
-			return 1;
-		}
-
 	}
-
-	return 0;
-
 }
 
 int vyber_predmetu(char predmet[5][50]) {
 
 	int volba_predm = 0;
 
+	while (1) {
+		printf("Zadajte cislo predmetu, do ktoreho chcete zadavat body: \n");
+		for (int i = 0; i < 5; i++) {
+			printf("%d) %s\n", i + 1, predmet[i]);
+		}
 
-	printf("zvolte predmet, do ktoreho chcete zadavat body(cislo): \n");
-	for (int i = 0; i < 5; i++) {
+		scanf_s("%d", &volba_predm);
 
-		printf("%d) %s\n", i + 1, predmet[i]);
+		if (volba_predm <= 0 || volba_predm > 5) {
+			printf("Nespravna volba! Skuste znova.\n\n");
+		}
+		else {
+			printf("Vybrany predmet: %s.\n", predmet[volba_predm - 1]);
+			break; // ukonci while(1)
+		}
 	}
-
-	scanf("%d", &volba_predm);
-
-	if (volba_predm <= 0 || volba_predm > 5) {
-		printf("nespravna volba");
-	}
-	else {
-		printf("vybrany predmet: %s\n", predmet[volba_predm - 1]);
-	}
-
-
 
 	return volba_predm;
-
 }
