@@ -26,6 +26,7 @@ endif()
 configure_file(${CMAKE_SOURCE_DIR}/users.txt ${CMAKE_BINARY_DIR}/users.txt COPYONLY)
 
 set(PREDMET_SUBORY
+        subjects.txt
         BPC-MAT1.txt
         BPC-ZKR.txt
         BPC-PC1T.txt

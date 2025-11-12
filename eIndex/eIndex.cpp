@@ -288,12 +288,31 @@ void zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_t
 	}
 
 	char riadok[DLZKA_STRING];
+	int max_body = 0;
+
+	// načítanie max. bodov
+	while (fgets(riadok, sizeof(riadok), fptr)) {
+		if (strncmp(riadok, "#MAX_BODY:", 10) == 0) {
+			max_body = atoi(riadok + 10);
+		} else if (strncmp(riadok, "#---DATA---", 11) == 0) {
+			break;
+		}
+	}
+
+	printf("Maximalny pocet bodov: ");
+	if (max_body <= 0) {
+		printf("Nezadefinovany!\n");
+	}
+	else {
+		printf("%d\n", max_body);
+	}
+
 	printf("\n%-20s %-10s %-10s %-10s %-10s %-10s\n", "Meno", "Cvicenia", "Testy", "Skuska", "Percenta", "Znamka");
 	printf("--------------------------------------------------------------------------\n");
 
 	while (fgets(riadok, sizeof(riadok), fptr)) {
 		char *meno, *cvicenia, *testy, *skuska, *id_str;
-		int cvicenia_int, testy_int, skuska_int;
+		int cvicenia_int, testy_int, skuska_int, spolu;
 		float percenta;
 		char znamka;
 
@@ -308,12 +327,19 @@ void zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_t
 			cvicenia_int = atoi(cvicenia);
 			testy_int = atoi(testy);
 			skuska_int = atoi(skuska);
+			spolu = cvicenia_int + testy_int + skuska_int;
 
-			// Výpočet percent (napr. váhy: cvičenia 20 %, testy 30 %, skúška 50 %)
-			percenta = (cvicenia_int * 0.2f) + (testy_int * 0.3f) + (skuska_int * 0.5f);
-			znamka = urci_znamku(percenta);
+			percenta = (float)spolu / max_body * 100.0f;
 
-			printf("%-20s %-10d %-10d %-10d %-10.1f %-10c\n", meno, cvicenia_int, testy_int, skuska_int, percenta, znamka);
+			if (percenta >= 90) znamka = 'A';
+			else if (percenta >= 80) znamka = 'B';
+			else if (percenta >= 70) znamka = 'C';
+			else if (percenta >= 60) znamka = 'D';
+			else if (percenta >= 50) znamka = 'E';
+			else znamka = 'F';
+
+			printf("%-20s %-10d %-10d %-10d %-10d %-10c\n",
+				   meno, cvicenia_int, testy_int, skuska_int, spolu, znamka);
 		}
 	}
 
