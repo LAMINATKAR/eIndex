@@ -1,0 +1,31 @@
+#PREDMET:BPC-KOM
+#MAX_BODY:100
+#---DATA---
+Peter Novak:5:20:10:1:
+Jana Kovacova:10:50:20:2:
+Martin Horvath:0:0:0:3:
+Lucia Tothova:0:5:0:4:
+Tomas Bartos:0:0:0:5:
+Michaela Varga:0:0:0:6:
+Andrej Farkas:0:0:1:7:
+#END
+
+#PREDMET:BPC-MA1
+#MAX_BODY:100
+#---DATA---
+#END
+
+#PREDMET:BPC-PC1T
+#MAX_BODY:100
+#---DATA---
+#END
+
+#PREDMET:BPC-PNA
+#MAX_BODY:100
+#---DATA---
+#END
+
+#PREDMET:BPC-ZKR
+#MAX_BODY:100
+#---DATA---
+#END
