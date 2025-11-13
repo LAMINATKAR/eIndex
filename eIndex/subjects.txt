@@ -13,11 +13,31 @@ Andrej Farkas:0:0:1:7:
 #PREDMET:BPC-MA1
 #MAX_BODY:100
 #---DATA---
+Adam Kovac:0:0:0:0:
+Lucia Novotna:0:0:0:0:
+Peter Horvath:0:0:0:0:
+Marek Dvorak:0:0:0:0:
+Zuzana Simkova:0:0:0:0:
+Tomas Blaha:0:0:0:0:
+Veronika Kucerova:0:0:0:0:
+Martin Benes:0:0:0:0:
+Andrea Holubova:0:0:0:0:
+Filip Kral:0:0:0:0:
 #END
 
 #PREDMET:BPC-PC1T
 #MAX_BODY:100
 #---DATA---
+Andrej Farkas:0:0:0:0:
+Eva Novak:0:0:0:0:
+Jan Urban:0:0:0:0:
+Monika Polakova:0:0:0:0:
+Lukas Bielik:0:0:0:0:
+Petra Kralova:0:0:0:0:
+Michal Varga:0:0:0:0:
+Simona Hajek:0:0:0:0:
+Tibor Sloboda:0:0:0:0:
+Katarina Hricova:0:0:0:0:
 #END
 
 #PREDMET:BPC-PNA

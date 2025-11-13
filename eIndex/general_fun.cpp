@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include <string.h>
 
+
+
+
+
 void vycistenie() {
 	system("cls");
 	printf("\n=== ELEKTRONICKY INDEX ===\n\n");
@@ -13,8 +17,11 @@ int overenie(char usnm[DLZKA_STRING])
 	int pokusy = 0;
 
 	while (pokusy < 3) {
+		
+		//scanf_s("%s", usnm, (unsigned)DLZKA_STRING);
 		printf("Zadajte prihlasovacie meno: ");
-		scanf_s("%s", usnm);
+		fgets(usnm, DLZKA_STRING, stdin);
+		usnm[strcspn(usnm, "\n")] = 0;
 
 		if (usnm != NULL) {
 			FILE* fptr;
@@ -85,8 +92,8 @@ int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
 	return volba_predm-1;
 }
 
-void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int predmet) {
-	int pocet_studentov = zobraz_vysledky(predmety, predmety_txt, predmet);
+void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int pct_stud) {
+	int pocet_studentov = zobraz_vysledky(predmety, predmety_txt, predmet, studenti, pct_stud);
 
 	FILE* fptr = fopen(predmety_txt[predmet], "r");
 	if (fptr == NULL) {
@@ -143,12 +150,17 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[
     while (fgets(buff, DLZKA_STRING, fptr)) {
         buff[strcspn(buff, "\n")] = 0;
 
+		if (buff[0] == '#' || buff[0] == '\0') {
+			continue;
+		}
+
     	// parsovanie podla :
         student = strtok(buff, ":");
         cviceni = strtok(NULL, ":");
         testy = strtok(NULL, ":");
         skuska = strtok(NULL, ":");
         stud_id_string = strtok(NULL, ":");
+
 
         // konverzia na na int
         studID_int = atoi(stud_id_string);
@@ -190,11 +202,11 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[
     fclose(fptr);
 }
 
-int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int predmet) {
+int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int pct_stud) {
 
 	printf("Vybrany predmet: %s\n", predmety[predmet]);
 
-	FILE* fptr = fopen(predmety_txt[predmet], "r");
+	FILE* fptr = fopen("subjects.txt", "r");
 	if (fptr == NULL) {
 		printf("Chyba: nepodarilo sa otvoriť súbor predmetu %s.\n", predmety[predmet]);
 		return 0;
@@ -203,14 +215,29 @@ int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_tx
 	char riadok[DLZKA_STRING];
 	int max_body = 0;
 	int pocet_studentov = 0;
+	char upr_riadok[DLZKA_STRING];
+	char riadok_prdmt[DLZKA_STRING];
 
 	// načítanie max. bodov
 	while (fgets(riadok, sizeof(riadok), fptr)) {
-		if (strncmp(riadok, "#MAX_BODY:", 10) == 0) {
+		riadok[strcspn(riadok, "\r\n")] = 0;
+		//printf("\n-----%s %s-------\n", riadok + 9, predmety[predmet]);
+		
+		if(strcmp(riadok + 9, predmety[predmet]) != 0){
+			continue;
+		}
+		else {
+			fgets(riadok, sizeof(riadok), fptr);
+			riadok[strcspn(riadok, "\r\n")] = 0;
+			max_body = atoi(riadok + 10);
+			break;
+		}
+
+		/*if (strncmp(riadok, "#MAX_BODY:", 10) == 0) {
 			max_body = atoi(riadok + 10);
 		} else if (strncmp(riadok, "#---DATA---", 11) == 0) {
 			break;
-		}
+		}*/
 	}
 
 	printf("Maximalny pocet bodov: ");
@@ -225,40 +252,35 @@ int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_tx
 	printf("----------------------------------------------------------------------------------------\n");
 
 
-	while (fgets(riadok, sizeof(riadok), fptr)) {
-		char *meno, *cvicenia, *testy, *skuska, *id_str;
-		int cvicenia_int, testy_int, skuska_int, spolu;
-		float percenta;
-		char znamka;
+	
 
-		// rozdelenie riadku (formát: meno:cvicenia:testy:skuska:id)
-		meno = strtok(riadok, ":");
-		cvicenia = strtok(NULL, ":");
-		testy = strtok(NULL, ":");
-		skuska = strtok(NULL, ":");
-		id_str = strtok(NULL, ":");
+	/*hali nove*/
 
-		if (meno && cvicenia && testy && skuska) {
-			cvicenia_int = atoi(cvicenia);
-			testy_int = atoi(testy);
-			skuska_int = atoi(skuska);
-			spolu = cvicenia_int + testy_int + skuska_int;
+	int spolu;
+	float percenta;
+	char znamka;
 
-			percenta = (float)spolu / max_body * 100.0f;
+	printf("sem to dojde\n");
 
-			if (percenta >= 90) znamka = 'A';
-			else if (percenta >= 80) znamka = 'B';
-			else if (percenta >= 70) znamka = 'C';
-			else if (percenta >= 60) znamka = 'D';
-			else if (percenta >= 50) znamka = 'E';
-			else znamka = 'F';
+	for (int i = 0; i < pct_stud; i++) {
+		spolu = studenti[i].cviceni_int + studenti[i].testy_int + studenti[i].skuska_int;
 
-			printf("%-4d %-20s %-10d %-10d %-10d %-10d %-10c\n",
-				   pocet_studentov + 1, meno, cvicenia_int, testy_int, skuska_int, spolu, znamka);
+		percenta = (float)spolu / max_body * 100.0f;
 
-			pocet_studentov++;
-		}
+		if (percenta >= 90) znamka = 'A';
+		else if (percenta >= 80) znamka = 'B';
+		else if (percenta >= 70) znamka = 'C';
+		else if (percenta >= 60) znamka = 'D';
+		else if (percenta >= 50) znamka = 'E';
+		else znamka = 'F';
+
+		printf("%-4d %-20s %-10d %-10d %-10d %-10d %-10c\n", i, studenti[i].student_str, studenti[i].cviceni_int, studenti[i].testy_int, studenti[i].skuska_int, spolu, znamka);
 	}
+	//spolu = studenti[].cvicenia_int + testy_int + skuska_int;
+
+	/*hali nove*/
+
+
 	if (pocet_studentov <= 0) {
 		printf("!    V tomto predmete nie su ziadni studenti!\n");
 	}
@@ -300,5 +322,84 @@ void edit_predmetu() {
 			}*/
 			break; // ukonci while(1)
 		}
+	}
+}
+
+void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud) {
+	FILE* fptr = fopen("subjects.txt", "r");
+
+	if (fptr == NULL) {
+		printf("Chyba: nepodarilo sa otvoriť súbor subjects\n");
+		//return 0;
+	}
+
+	char buff[DLZKA_STRING];
+	char predm_str[50];
+
+	switch (predm_cislo) {
+		case 0:
+			strcpy(predm_str,"#PREDMET:BPC-KOM");
+			break;
+		case 1:
+			strcpy(predm_str, "#PREDMET:BPC-MA1");
+			break;
+		case 2:
+			strcpy(predm_str, "#PREDMET:BPC-PC1T");
+			break;
+		case 3:
+			strcpy(predm_str, "#PREDMET:BPC-PNA");
+			break;
+		case 4:
+			strcpy(predm_str, "#PREDMET:BPC-ZKR");
+			break;
+
+
+	}
+
+
+	while (fgets(buff, DLZKA_STRING, fptr)) {
+		buff[strcspn(buff, "\n")] = 0;
+
+		if (strcmp(buff, predm_str) == 0) {
+			break;
+		}
+
+	}
+
+	int prm = 0;
+
+	while (fgets(buff, DLZKA_STRING, fptr)) {
+		buff[strcspn(buff, "\n")] = 0;
+
+		if (strcmp(buff, "#MAX_BODY:100") == 0 || strcmp(buff, "#---DATA---") == 0) {
+			continue;
+		}
+
+		if (strcmp(buff, "#END") == 0) {
+			count_stud[predm_cislo] = prm;
+			break;
+		}
+
+		studenti[prm].student = strtok(buff, ":");
+		studenti[prm].cviceni = strtok(NULL, ":");
+		studenti[prm].testy = strtok(NULL, ":");
+		studenti[prm].skuska = strtok(NULL, ":");
+		studenti[prm].stud_id_string = strtok(NULL, ":");
+
+
+		strcpy(studenti[prm].student_str, studenti[prm].student);
+		strcpy(studenti[prm].cviceni_str, studenti[prm].cviceni);
+		strcpy(studenti[prm].testy_str, studenti[prm].testy);
+		strcpy(studenti[prm].skuska_str, studenti[prm].skuska);
+		strcpy(studenti[prm].stud_id_str, studenti[prm].stud_id_string);
+
+		// konverzia na na int
+		studenti[prm].studID_int = atoi(studenti[prm].stud_id_string);
+		studenti[prm].cviceni_int = atoi(studenti[prm].cviceni);
+		studenti[prm].testy_int = atoi(studenti[prm].testy);
+		studenti[prm].skuska_int = atoi(studenti[prm].skuska);
+
+		prm++;
+
 	}
 }
