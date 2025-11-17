@@ -28,8 +28,8 @@ struct student {
 };
 
 void vycistenie();
-int overenie(char usnm[DLZKA_STRING]);
-int overenie2();
+int overenie();
+unsigned long simple_hash(const char *str);
 int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]);
 void zapis_znamok(char predmet[POCET_PREDMET][DLZKA_STRING], char predmet_txt[POCET_PREDMET][DLZKA_STRING], int vybr_predmet, struct student* studenti, int pct_stud);
 int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int vybr_predmet, struct student* studenti, int pct_stud);

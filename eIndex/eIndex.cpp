@@ -56,7 +56,7 @@ int main()
 
 	printf("\n=== ELEKTRONICKY INDEX ===\n");
 
-    if (overenie2()) {
+    if (overenie()) {
         return 0; // neuspesne prihlasenie
     }
 

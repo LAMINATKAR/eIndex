@@ -10,56 +10,7 @@ void vycistenie() {
 	printf("\n=== ELEKTRONICKY INDEX ===\n\n");
 }
 
-int overenie(char usnm[DLZKA_STRING])
-{
-	int pokusy = 0;
-
-	while (pokusy < 3) {
-
-		printf("Zadajte prihlasovacie meno: ");
-		fgets(usnm, DLZKA_STRING, stdin);
-		usnm[strcspn(usnm, "\n")] = 0;
-
-		if (usnm != NULL) {
-			FILE* fptr;
-			fptr = fopen("users.txt", "r");
-			if (fptr == NULL) {
-				perror("Chyba pri otvarani suboru users.txt");
-				return 1;
-			}
-
-			char buff[DLZKA_STRING];
-			int status_meno = 1;
-
-			// Reading strings till fgets returns NULL
-			while (fgets(buff, DLZKA_STRING, fptr)) {
-				buff[strcspn(buff, "\n")] = 0;
-
-				if (strcmp(buff, usnm) == 0) {
-					printf("Vitaj v eIndexe, %s!\n\n", buff);
-					status_meno = 0;
-				}
-			}
-
-			fclose(fptr);
-
-			if (status_meno) {
-				pokusy++;
-				if (pokusy < 3) {
-					printf("Prihlasenie neuspesne! (%d/3 pokusov) Skuste znova.\n\n", pokusy);
-				} else {
-					printf("Prihlasenie neuspesne! Dosiahli ste maximalny pocet pokusov (3). Program bude ukonceny.\n");
-					return 1;
-				}
-			} else {
-				//break; //meno bolo nájdené
-				return 0;
-			}
-		}
-	}
-}
-
-int overenie2()
+int overenie()
 {
 	char usnm[DLZKA_STRING];
 	char uspass[DLZKA_STRING];
@@ -74,6 +25,10 @@ int overenie2()
 		printf("Zadajte heslo: ");
 		fgets(uspass, DLZKA_STRING, stdin);
 		uspass[strcspn(uspass, "\n")] = 0;
+
+		unsigned long uspass_hash = simple_hash(uspass);
+
+		//printf("[DEBUG] Heslo: '%s', Hash: %lu\n", uspass, uspass_hash); // DEBUG a zaroven sluzi na vytvaranie hesiel NEMAZAT
 
 		if (usnm != NULL) {
 			FILE* fptr;
@@ -94,9 +49,9 @@ int overenie2()
 
 				sscanf(buff, "%[^:]:%[^:]:%[^\n]", file_meno, file_heslo, file_predmety); // nacita a parsuje vo formate "meno:heslo:predmety"
 
-				///printf("%s\n", file_predmety); // DEBUG
+				unsigned long file_heslo_hash = strtoul(file_heslo, NULL, 10); // konverzia hesla zo stringu na unsigned long
 
-				if (strcmp(file_meno, usnm) == 0 && strcmp(file_heslo, uspass) == 0) {
+				if (strcmp(file_meno, usnm) == 0 && file_heslo_hash == uspass_hash) {
 					printf("Vitaj v eIndexe, %s!\n\n", file_meno);
 
 					int i = 0;
@@ -121,6 +76,15 @@ int overenie2()
 			}
 		}
 	}
+}
+
+// Jednoduchý hash (DJB2)
+unsigned long simple_hash(const char *str) {
+	unsigned long hash = 5381;
+	int c;
+	while ((c = *str++))
+		hash = ((hash << 5) + hash) + c; // hash * 33 + c
+	return hash;
 }
 
 int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
