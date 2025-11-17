@@ -14,12 +14,11 @@ struct student {
 	char* skuska;
 	char* stud_id_string;
 
-
-	char student_str[50];
-	char cviceni_str[50];
-	char testy_str[50];
-	char skuska_str[50];
-	char stud_id_str[50];
+	char student_str[DLZKA_STRING];
+	char cviceni_str[DLZKA_STRING];
+	char testy_str[DLZKA_STRING];
+	char skuska_str[DLZKA_STRING];
+	char stud_id_str[DLZKA_STRING];
 
 	int cviceni_int;
 	int testy_int;
@@ -28,10 +27,9 @@ struct student {
 	int vybrany_student;
 };
 
-
-
 void vycistenie();
 int overenie(char usnm[DLZKA_STRING]);
+int overenie2();
 int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]);
 void zapis_znamok(char predmet[POCET_PREDMET][DLZKA_STRING], char predmet_txt[POCET_PREDMET][DLZKA_STRING], int vybr_predmet, struct student* studenti, int pct_stud);
 int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int vybr_predmet, struct student* studenti, int pct_stud);

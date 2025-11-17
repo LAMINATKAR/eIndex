@@ -37,9 +37,7 @@ int main()
 	////
 
 
-    char us_name[DLZKA_STRING];
     char predmet[POCET_PREDMET][DLZKA_STRING] = {
-
 	    "BPC-MA1",
     	"BPC-ZKR",
     	"BPC-PC1T",
@@ -58,16 +56,18 @@ int main()
 
 	printf("\n=== ELEKTRONICKY INDEX ===\n");
 
-    if (overenie(us_name)) {
+    if (overenie2()) {
         return 0; // neuspesne prihlasenie
     }
 
 	while (1) {
 		int editovanie = 1;
 		int vybr_predmet = vyber_predmetu(predmet);
+		int valid_case = 1;
+
 		while (editovanie) {
 
-			/*napad taky, ze: switch podla vybr_ predm a nasledne podla toho sa posla spravna struct spravneho predmetu*/
+			// na zaklade vybraneho predmetu sa posiela struct spravneho predmetu
 			switch(vybr_predmet) {
 				case 0:
 					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_ma1, pct_stud_aktual[0]);
@@ -84,13 +84,21 @@ int main()
 				case 4:
 					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_pna, pct_stud_aktual[4]);
 					break;
-
-
+				default:
+					valid_case = 0;
+					editovanie = 0;
+					break;
 			}
-			//zapis_znamok(predmet, predmet_txt, vybr_predmet);
-			printf("\nChcete pokracovat v editacii? (1 = ano, 0 = spat do vyberu predmetu): ");
-			scanf_s("%d", &editovanie);
-			vycistenie();
+
+			if (valid_case) {
+				printf("\nChcete pokracovat v editacii tohoto predmetu? (1 = ano, 0 = spat do vyberu predmetu): ");
+				scanf_s("%d", &editovanie);
+				vycistenie();
+			} else {
+				printf("\nStlacte Enter pre ukoncenie programu...");
+				getchar(); // čaká na stlačenie Enter
+				return 0;
+			}
 		}
 	}
 }
