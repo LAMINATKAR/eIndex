@@ -140,48 +140,23 @@ int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
 void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int pct_stud) {
 	int pocet_studentov = zobraz_vysledky(predmety, predmety_txt, predmet, studenti, pct_stud);
 
-	FILE* fptr = fopen(predmety_txt[predmet], "r");
-	if (fptr == NULL) {
-		printf("Chyba: nepodarilo sa otvorit subor %s\n", predmety_txt[predmet]);
-		return;
-	}
+	
 
-	char buff[DLZKA_STRING];
-	char* student = NULL;
-	char* cviceni = NULL;
-	char* testy = NULL;
-	char* skuska = NULL;
-	char* stud_id_string = NULL;
-
-	int cviceni_int = 0;
-	int testy_int = 0;
-	int skuska_int = 0;
-	int studID_int = 0;
 	int vybrany_student = -1;
 
-	//vypis studentov
-	/*while (fgets(buff, DLZKA_STRING, fptr)) {
-		buff[strcspn(buff, "\n")] = 0;
-
-		//parsovanie podla :
-		student = strtok(buff, ":");
-		cviceni = strtok(NULL, ":");
-		testy = strtok(NULL, ":");
-		skuska = strtok(NULL, ":");
-
-		printf("%d) Student: %s, Cvicenia: %s, Testy: %s, Skuska: %s\n", id, student, cviceni, testy, skuska);
-		id++;
-	}*/
-
 	while (1) {
-		printf("\nVyberte studenta, ktoremu chcete zapisat body: ");
+		printf("\nvyberte studenta, ktoremu chcete zapisat body: ");
 		scanf_s("%d", &vybrany_student);
-		if (vybrany_student < 0 || vybrany_student > pocet_studentov) {
-			printf("Nespravna volba! Skuste znova.\n");
+
+		//test
+		printf("vybrany student cislo: %d", vybrany_student);
+
+		if (vybrany_student < 0 || vybrany_student > pct_stud) {
+			printf("nespravna volba! skuste znova.\n");
 		}
 		else if (vybrany_student == 0) {
 			edit_predmetu();
-			fclose(fptr);
+			//fclose(fptr);
 			return;
 		}
 		else {
@@ -189,36 +164,7 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[
 		}
 	}
 
-    rewind(fptr); // znova citanie suboru od zaciatku
-    int id = 1;
-
-    while (fgets(buff, DLZKA_STRING, fptr)) {
-        buff[strcspn(buff, "\n")] = 0;
-
-		if (buff[0] == '#' || buff[0] == '\0') {
-			continue;
-		}
-
-    	// parsovanie podla :
-        student = strtok(buff, ":");
-        cviceni = strtok(NULL, ":");
-        testy = strtok(NULL, ":");
-        skuska = strtok(NULL, ":");
-        stud_id_string = strtok(NULL, ":");
-
-
-        // konverzia na na int
-        studID_int = atoi(stud_id_string);
-        cviceni_int = atoi(cviceni);
-        testy_int = atoi(testy);
-        skuska_int = atoi(skuska);
-
-        if (id == studID_int) {
-            printf("Vybrali ste: %d) Student: %s\n\n", studID_int, student);
-            break;
-        }
-        id++;
-    }
+ 
 
     int body_volba = 0;
 	while (1) {
@@ -237,14 +183,14 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[
     scanf_s("%d", &pocet_bodov);
 
     switch (body_volba) {
-    case 1: cviceni_int += pocet_bodov; break;
-    case 2: testy_int += pocet_bodov; break;
-    case 3: skuska_int += pocet_bodov; break;
+    case 1: studenti[vybrany_student-1].cviceni_int += pocet_bodov; break;
+    case 2: studenti[vybrany_student-1].testy_int += pocet_bodov; break;
+    case 3: studenti[vybrany_student-1].skuska_int += pocet_bodov; break;
     }
 
 	printf("\nBody boli uspesne pridane. Aktualizovany stav:\n");
-    printf("%d) Student: %s, Cvicenia: %d, Testy: %d, Skuska: %d\n", studID_int, student, cviceni_int, testy_int, skuska_int);
-    fclose(fptr);
+    printf("%d) Student: %s, Cvicenia: %d, Testy: %d, Skuska: %d\n", vybrany_student, studenti[vybrany_student - 1].student_str, studenti[vybrany_student - 1].cviceni_int, studenti[vybrany_student - 1].testy_int, studenti[vybrany_student - 1].skuska_int);
+    //fclose(fptr);
 }
 
 int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int pct_stud) {
@@ -319,14 +265,16 @@ int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_tx
 		else if (percenta >= 50) znamka = 'E';
 		else znamka = 'F';
 
-		printf("%-4d %-20s %-10d %-10d %-10d %-10d %-10c\n", i, studenti[i].student_str, studenti[i].cviceni_int, studenti[i].testy_int, studenti[i].skuska_int, spolu, znamka);
+		printf("%-4d %-20s %-10d %-10d %-10d %-10d %-10c\n", i+1, studenti[i].student_str, studenti[i].cviceni_int, studenti[i].testy_int, studenti[i].skuska_int, spolu, znamka);
 	}
+
+	printf("\npocet studentov vo zobraz vysledky: %d\n", pct_stud);
 	//spolu = studenti[].cvicenia_int + testy_int + skuska_int;
 
 	/*hali nove*/
 
 
-	if (pocet_studentov <= 0) {
+	if (pct_stud <= 0) {
 		printf("!    V tomto predmete nie su ziadni studenti!\n");
 	}
 	printf("%-4d Odist/Upravit predmet\n", 0);
@@ -338,7 +286,7 @@ int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_tx
 	fclose(fptr);
 	//vycistenie();
 
-	return pocet_studentov;
+	return pct_stud;
 }
 
 void edit_predmetu() {
@@ -418,7 +366,7 @@ void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud) {
 		}
 
 		if (strcmp(buff, "#END") == 0) {
-			count_stud[predm_cislo] = prm;
+			*count_stud = prm;
 			break;
 		}
 
@@ -443,4 +391,72 @@ void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud) {
 
 		prm++;
 	}
+}
+
+void zapis_subor(struct student* studenti, int pct_stud, char *predmet) {
+
+	FILE* fptr = fopen("subjects_temp.txt", "r");
+
+	if (fptr) {
+		// Existuje
+		fclose(fptr);
+		fptr = fopen("subjects_temp.txt", "a");
+	}
+	else {
+		// Neexistuje
+		fptr = fopen("subjects_temp.txt", "w+");
+	}
+
+	if (!fptr) {
+		perror("Chyba: nepodarilo sa otvorit alebo vytvorit subjects_temp.txt");
+		return;
+	}
+
+	fprintf(fptr, "#PREDMET:");
+	fprintf(fptr, "%s\n", predmet);
+	fprintf(fptr, "#MAX_BODY:100\n");
+	fprintf(fptr, "#---DATA---\n");
+
+	for (int i = 0; i < pct_stud; i++) {
+		fprintf(fptr, "%s:%d:%d:%d:%d:\n",
+			studenti[i].student_str,
+			studenti[i].cviceni_int,
+			studenti[i].testy_int,
+			studenti[i].skuska_int,
+			studenti[i].studID_int);
+	}
+
+
+
+	fprintf(fptr, "#END\n\n");
+
+
+	fclose(fptr);
+
+
+
+}
+
+void update_subor() {
+
+	const char* filename = "subjects.txt";
+
+	if (remove(filename) == 0) {
+		printf("Subor zmazany uspesne.\n");
+	}
+	else {
+		perror("Chyba pri mazani suboru");
+	}
+
+	const char* stary = "subjects_temp.txt";
+	const char* novy = "subjects_novy.txt";
+
+	if (rename(stary, novy) == 0) {
+		printf("Subor premenovany uspesne.\n");
+	}
+	else {
+		perror("Chyba pri premenovani suboru");
+	}
+
+
 }

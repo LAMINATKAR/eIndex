@@ -43,9 +43,18 @@ Katarina Hricova:0:0:0:0:
 #PREDMET:BPC-PNA
 #MAX_BODY:100
 #---DATA---
+Marek Simko:0:0:0:0:
+Lucia Benkova:0:0:0:0:
+Peter Hruz:0:0:0:0:
+Jana Kovacova:0:0:0:0:
 #END
 
 #PREDMET:BPC-ZKR
 #MAX_BODY:100
 #---DATA---
+Tomas Valach:0:0:0:0:
+Eva Sustekova:0:0:0:0:
+Roman Bielik:0:0:0:0:
+Katarina Holubova:0:0:0:0:
+Michal Gresko:0:0:0:0:
 #END

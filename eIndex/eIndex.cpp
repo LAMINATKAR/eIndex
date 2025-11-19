@@ -22,16 +22,20 @@ int main()
 
 	int pct_stud_aktual[5];
 
-	fill_strukt(stud_kom, 0, &pct_stud_aktual[0]);
-	fill_strukt(stud_ma1, 1, &pct_stud_aktual[1]);
+	fill_strukt(stud_kom, 0, &pct_stud_aktual[0]); 
+	fill_strukt(stud_ma1, 1, &pct_stud_aktual[1]); 
 	fill_strukt(stud_pc1t, 2, &pct_stud_aktual[2]);
-	fill_strukt(stud_pna, 3, &pct_stud_aktual[3]);
+	fill_strukt(stud_pna, 3, &pct_stud_aktual[3]); 
 	fill_strukt(stud_zkr, 4, &pct_stud_aktual[4]);
 
-	/*printf("\npocet student v 1: %d\n", pct_stud_aktual[0]);
-	for (int ii = 0; ii < pct_stud_aktual[2] ; ii++) {
-		printf("%s %d %d %d\n", stud_pc1t[ii].student_str, stud_pc1t[ii].cviceni_int, stud_pc1t[ii].testy_int, stud_pc1t[ii].skuska_int);
+	 //testy
+	/*printf("\npocet student v 1: %d\n", pct_stud_aktual[4]);
+	for (int ii = 0; ii < pct_stud_aktual[4] ; ii++) {
+		printf("%s %d %d %d\n", stud_zkr[ii].student_str, stud_zkr[ii].cviceni_int, stud_zkr[ii].testy_int, stud_zkr[ii].skuska_int);
 	}*/
+	//printf(" pocet studentov: %d", pct_stud_aktual[2])
+
+
 	// len sem si skusal si funguje
 	//printf("pocet studentov kom:%d", pct_stud); nic
 	////
@@ -70,19 +74,24 @@ int main()
 			// na zaklade vybraneho predmetu sa posiela struct spravneho predmetu
 			switch(vybr_predmet) {
 				case 0:
-					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_ma1, pct_stud_aktual[0]);
+					//MA1
+					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_ma1, pct_stud_aktual[1]);
 					break;
 				case 1:
-					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_zkr, pct_stud_aktual[1]);
+					//ZKR
+					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_zkr, pct_stud_aktual[4]);
 					break;
 				case 2:
+					//PC1T
 					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_pc1t, pct_stud_aktual[2]);
 					break;
 				case 3:
-					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_kom, pct_stud_aktual[3]);
+					//KOM
+					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_kom, pct_stud_aktual[0]);
 					break;
 				case 4:
-					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_pna, pct_stud_aktual[4]);
+					//PNA
+					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_pna, pct_stud_aktual[3]);
 					break;
 				default:
 					valid_case = 0;
@@ -97,6 +106,16 @@ int main()
 			} else {
 				printf("\nStlacte Enter pre ukoncenie programu...");
 				getchar(); // čaká na stlačenie Enter
+
+				//for(int y=0; i < POCET_PREDMET; i++)
+				zapis_subor(stud_kom, pct_stud_aktual[0], predmet[3]);
+				zapis_subor(stud_ma1, pct_stud_aktual[1], predmet[0]);
+				zapis_subor(stud_pc1t, pct_stud_aktual[2], predmet[2]);
+				zapis_subor(stud_pna, pct_stud_aktual[3], predmet[4]);
+				zapis_subor(stud_zkr, pct_stud_aktual[4], predmet[1]);
+
+				update_subor();
+
 				return 0;
 			}
 		}

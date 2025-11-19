@@ -4,7 +4,7 @@
 
 const int POCET_PREDMET = 6;
 const int DLZKA_STRING = 50;
-const int POCET_STUDENT = 50;
+const int POCET_STUDENT = 150;
 
 struct student {
 
@@ -35,3 +35,5 @@ void zapis_znamok(char predmet[POCET_PREDMET][DLZKA_STRING], char predmet_txt[PO
 int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int vybr_predmet, struct student* studenti, int pct_stud);
 void edit_predmetu();
 void fill_strukt(struct student* studenti, int predm_cislo, int* count_stud);
+void zapis_subor(struct student* studenti, int pct_stud, char* predmet);
+void update_subor();
