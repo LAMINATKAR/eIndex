@@ -65,12 +65,11 @@ int main()
     }
 
 	while (1) {
-		int editovanie = 1;
 		int vybr_predmet = vyber_predmetu(predmet);
+		int editovanie = 1;
 		int valid_case = 1;
 
 		while (editovanie) {
-
 			// na zaklade vybraneho predmetu sa posiela struct spravneho predmetu
 			switch(vybr_predmet) {
 				case 0:

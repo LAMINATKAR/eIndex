@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
-char *opravnenia[POCET_PREDMET];
+//char *opravnenia[POCET_PREDMET];
+char opravnenia[POCET_PREDMET][DLZKA_STRING];
 
 void vycistenie() {
 	system("cls");
@@ -54,10 +55,19 @@ int overenie()
 				if (strcmp(file_meno, usnm) == 0 && file_heslo_hash == uspass_hash) {
 					printf("Vitaj v eIndexe, %s!\n\n", file_meno);
 
-					int i = 0;
+					/*int i = 0;
 					char *token = strtok(file_predmety, ",");
 					while (token != NULL && i < POCET_PREDMET) {
 						opravnenia[i++] = token;
+						token = strtok(NULL, ",");
+					}*/
+
+					int i = 0;
+					char *token = strtok(file_predmety, ",");
+					while (token != NULL && i < POCET_PREDMET) {
+						// skopírujeme reťazec do pevného poľa
+						strcpy(opravnenia[i], token); // opravnenia[i] je char[DLZKA_STRING]
+						i++;
 						token = strtok(NULL, ",");
 					}
 
@@ -116,12 +126,15 @@ int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
 		for (int i = 0; i < pocet_povolene; i++) {
 			printf("%d) %s\n", i + 1, povolene_predmety[i]);
 		}
-		//printf("0) Ukoncit program\n");
+		printf("0) Ulozit zmeny a ukoncit program\n");
 		printf("Volba: ");
 		scanf_s("%d", &volba_predm);
 
-		if (volba_predm <= 0 || volba_predm > pocet_povolene) {
+		if (volba_predm < 0 || volba_predm > pocet_povolene) {
 			printf("Nespravna volba! Skuste znova.\n\n");
+		}
+		else if (volba_predm == 0) {
+			return -1;
 		}
 		else {
 			//printf("Vybrany predmet: %s.\n", predmet[volba_predm - 1]);
@@ -140,8 +153,6 @@ int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
 void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int pct_stud) {
 	int pocet_studentov = zobraz_vysledky(predmety, predmety_txt, predmet, studenti, pct_stud);
 
-	
-
 	int vybrany_student = -1;
 
 	while (1) {
@@ -149,10 +160,10 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[
 		scanf_s("%d", &vybrany_student);
 
 		//test
-		printf("vybrany student cislo: %d", vybrany_student);
+		//printf("vybrany student cislo: %d", vybrany_student);
 
 		if (vybrany_student < 0 || vybrany_student > pct_stud) {
-			printf("nespravna volba! skuste znova.\n");
+			printf("\nNespravna volba! skuste znova.\n");
 		}
 		else if (vybrany_student == 0) {
 			edit_predmetu();
@@ -163,8 +174,6 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[
 			break; // ukonci while(1)
 		}
 	}
-
- 
 
     int body_volba = 0;
 	while (1) {
@@ -242,33 +251,30 @@ int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_tx
 	printf("\n%-4s %-20s %-10s %-10s %-10s %-10s %-10s\n", "ID", "Meno", "Cvicenia", "Testy", "Skuska", "Spolu", "Znamka");
 	printf("----------------------------------------------------------------------------------------\n");
 
-
-	
-
 	/*hali nove*/
 
 	int spolu;
 	float percenta;
 	char znamka;
 
-	printf("sem to dojde\n");
+	//printf("sem to dojde\n");
 
 	for (int i = 0; i < pct_stud; i++) {
 		spolu = studenti[i].cviceni_int + studenti[i].testy_int + studenti[i].skuska_int;
 
 		percenta = (float)spolu / max_body * 100.0f;
 
-		if (percenta >= 90) znamka = 'A';
-		else if (percenta >= 80) znamka = 'B';
-		else if (percenta >= 70) znamka = 'C';
-		else if (percenta >= 60) znamka = 'D';
-		else if (percenta >= 50) znamka = 'E';
+		if (percenta >= ZN_A) znamka = 'A';
+		else if (percenta >= ZN_B) znamka = 'B';
+		else if (percenta >= ZN_C) znamka = 'C';
+		else if (percenta >= ZN_D) znamka = 'D';
+		else if (percenta >= ZN_E) znamka = 'E';
 		else znamka = 'F';
 
 		printf("%-4d %-20s %-10d %-10d %-10d %-10d %-10c\n", i+1, studenti[i].student_str, studenti[i].cviceni_int, studenti[i].testy_int, studenti[i].skuska_int, spolu, znamka);
 	}
 
-	printf("\npocet studentov vo zobraz vysledky: %d\n", pct_stud);
+	//printf("\npocet studentov vo zobraz vysledky: %d\n", pct_stud);
 	//spolu = studenti[].cvicenia_int + testy_int + skuska_int;
 
 	/*hali nove*/

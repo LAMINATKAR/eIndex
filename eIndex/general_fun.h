@@ -6,6 +6,13 @@ const int POCET_PREDMET = 6;
 const int DLZKA_STRING = 50;
 const int POCET_STUDENT = 150;
 
+// Mimimalne percenta na danu znamku
+const int ZN_A = 90;
+const int ZN_B = 80;
+const int ZN_C = 70;
+const int ZN_D = 60;
+const int ZN_E = 50;
+
 struct student {
 
 	char* student;
