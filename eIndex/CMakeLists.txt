@@ -12,8 +12,7 @@ endif()
 project ("eIndex")
 
 # Add source to this project's executable.
-add_executable (eIndex "eIndex.cpp" "eIndex.h" "general_fun.cpp" "general_fun.h" "edit_sub_fun.cpp" "edit_sub_fun.h"
-        edit_sub_fun.cpp)
+add_executable (eIndex "eIndex.cpp" "eIndex.h" "general_fun.cpp" "general_fun.h" "help_fun.cpp" "help_fun.h" "settings.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET eIndex PROPERTY CXX_STANDARD 20)
@@ -24,16 +23,4 @@ endif()
 
 # Nakopirovanie DB suborov do build adresara (aby isli otvorit vzdy a vsetkym)
 configure_file(${CMAKE_SOURCE_DIR}/users.txt ${CMAKE_BINARY_DIR}/users.txt COPYONLY)
-
-set(PREDMET_SUBORY
-        subjects.txt
-        BPC-MAT1.txt
-        BPC-ZKR.txt
-        BPC-PC1T.txt
-        BPC-KOM.txt
-        BPC-PNA.txt
-)
-
-foreach(subor IN LISTS PREDMET_SUBORY)
-  configure_file(${CMAKE_SOURCE_DIR}/${subor} ${CMAKE_BINARY_DIR}/${subor} COPYONLY)
-endforeach()
+configure_file(${CMAKE_SOURCE_DIR}/subjects.txt ${CMAKE_BINARY_DIR}/subjects.txt COPYONLY)

@@ -3,6 +3,7 @@
 
 #include "eIndex.h"
 #include "general_fun.h"
+#include "help_fun.h"
 #include <stdio.h>
 
 using namespace std;
@@ -11,13 +12,9 @@ int main()
 {
 
 	struct student stud_kom[POCET_STUDENT];
-
 	struct student stud_ma1[POCET_STUDENT];
-
 	struct student stud_pc1t[POCET_STUDENT];
-
 	struct student stud_pna[POCET_STUDENT];
-
 	struct student stud_zkr[POCET_STUDENT];
 
 	int pct_stud_aktual[5];
@@ -38,7 +35,6 @@ int main()
 
 	// len sem si skusal si funguje
 	//printf("pocet studentov kom:%d", pct_stud); nic
-	////
 
 
     char predmet[POCET_PREDMET][DLZKA_STRING] = {

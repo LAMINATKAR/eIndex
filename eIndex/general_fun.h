@@ -1,17 +1,16 @@
 #pragma once
+#include "settings.h"
 
-#include <iostream>
-
-const int POCET_PREDMET = 6;
-const int DLZKA_STRING = 50;
-const int POCET_STUDENT = 150;
+/*const int POCET_PREDMET = 6;
+const int DLZKA_STRING = 100; // povodne 50
+const int POCET_STUDENT = 150;*/
 
 // Mimimalne percenta na danu znamku
-const int ZN_A = 90;
+/*const int ZN_A = 90;
 const int ZN_B = 80;
 const int ZN_C = 70;
 const int ZN_D = 60;
-const int ZN_E = 50;
+const int ZN_E = 50;*/
 
 struct student {
 
@@ -34,13 +33,11 @@ struct student {
 	int vybrany_student;
 };
 
-void vycistenie();
 int overenie();
-unsigned long simple_hash(const char *str);
 int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]);
-void zapis_znamok(char predmet[POCET_PREDMET][DLZKA_STRING], char predmet_txt[POCET_PREDMET][DLZKA_STRING], int vybr_predmet, struct student* studenti, int pct_stud);
-int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[POCET_PREDMET][DLZKA_STRING], int vybr_predmet, struct student* studenti, int pct_stud);
+void zapis_znamok(char predmet[POCET_PREDMET][DLZKA_STRING], /*char predmet_txt[POCET_PREDMET][DLZKA_STRING],*/ int vybr_predmet, struct student* studenti, int pct_stud);
+int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], /*char predmety_txt[POCET_PREDMET][DLZKA_STRING],*/ int vybr_predmet, struct student* studenti, int pct_stud);
 void edit_predmetu();
-void fill_strukt(struct student* studenti, int predm_cislo, int* count_stud);
-void zapis_subor(struct student* studenti, int pct_stud, char* predmet);
-void update_subor();
+void zmena_max_bodov();
+void pridanie_stud();
+void vymazanie_stud();

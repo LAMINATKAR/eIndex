@@ -1,15 +1,11 @@
 #include "general_fun.h"
-#include "edit_sub_fun.h"
+#include "help_fun.h"
 #include <stdio.h>
 #include <string.h>
+#include <iostream>
 
 //char *opravnenia[POCET_PREDMET];
 char opravnenia[POCET_PREDMET][DLZKA_STRING];
-
-void vycistenie() {
-	system("cls");
-	printf("\n=== ELEKTRONICKY INDEX ===\n\n");
-}
 
 int overenie()
 {
@@ -86,15 +82,6 @@ int overenie()
 			}
 		}
 	}
-}
-
-// Jednoduchý hash (DJB2)
-unsigned long simple_hash(const char *str) {
-	unsigned long hash = 5381;
-	int c;
-	while ((c = *str++))
-		hash = ((hash << 5) + hash) + c; // hash * 33 + c
-	return hash;
 }
 
 int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
@@ -177,9 +164,9 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_txt[
 
     int body_volba = 0;
 	while (1) {
-		printf("Pridat body za: \n1.cvicenie \n2.test \n3.skusku\nVolba: ");
+		printf("Pridat body za: \n1.cvicenie \n2.test \n3.skusku\n0.Zrusit\nVolba: ");
 		scanf_s("%d", &body_volba);
-		if (body_volba == 0 || body_volba > 3) {
+		if (body_volba < 0 || body_volba > 3) {
 			printf("Nespravna volba! Skuste znova.\n\n");
 		}
 		else {
@@ -298,12 +285,14 @@ int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], char predmety_tx
 void edit_predmetu() {
 	printf("Zatial sa neda :)\n\n");
 	return;
+	//printf("Zatial sa neda :)\n\n");
+	//return;
 
 	int volba_upravy = -1;
 
 	while (1) {
 		printf("Aku zmenu chcete vykonat: \n");
-		printf("1) Zmenit nazov predmetu\n2) Zmenit maximalny pocet bodov\n3) Pridat studenta\n4) Vymazat studenta\n0) Odist\n");
+		printf("1) Pridat studenta\n2) Vymazat studenta\n3) Zmenit pocet maximalnych bodov\n0) Odist\n");
 		printf("Volba: ");
 		scanf_s("%d", &volba_upravy);
 
@@ -320,149 +309,57 @@ void edit_predmetu() {
 				case 3: pridanie_stud;
 				case 4: vymazanie_stud;
 			}*/
+			switch (volba_upravy) {
+				case 1: pridanie_stud;
+				case 2: vymazanie_stud;
+				case 3: zmena_max_bodov;
+			}
 			break; // ukonci while(1)
 		}
 	}
 }
 
-void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud) {
-	FILE* fptr = fopen("subjects.txt", "r");
+void pridanie_stud(){
+	printf("Zatial sa neda :)\n\n");
 
-	if (fptr == NULL) {
-		printf("Chyba: nepodarilo sa otvorit subor subjects.txt\n");
+	/*if (pocet_stud >= POCET_STUDENT) {
+		printf("Bol dosiahnuty maximalny pocet studentov!\n\n");
 		return;
 	}
 
-	char buff[DLZKA_STRING];
-	char predm_str[DLZKA_STRING];
+	printf("Zadajte meno studenta: ");
+	scanf_s("%s", zoznam[pocet_stud].meno);
 
-	switch (predm_cislo) {
-		case 0:
-			strcpy(predm_str,"#PREDMET:BPC-KOM");
-			break;
-		case 1:
-			strcpy(predm_str, "#PREDMET:BPC-MA1");
-			break;
-		case 2:
-			strcpy(predm_str, "#PREDMET:BPC-PC1T");
-			break;
-		case 3:
-			strcpy(predm_str, "#PREDMET:BPC-PNA");
-			break;
-		case 4:
-			strcpy(predm_str, "#PREDMET:BPC-ZKR");
-			break;
-	}
+	pocet_stud++;
+	printf("Student bol uspesne pridany!\n\n");*/
+};
 
+void vymazanie_stud(){
+	printf("Zatial sa neda :)\n\n");
 
-	while (fgets(buff, DLZKA_STRING, fptr)) {
-		buff[strcspn(buff, "\n")] = 0;
-		if (strcmp(buff, predm_str) == 0) {
-			break;
-		}
-	}
-
-	int prm = 0;
-
-	while (fgets(buff, DLZKA_STRING, fptr)) {
-		buff[strcspn(buff, "\n")] = 0;
-
-		if (strcmp(buff, "#MAX_BODY:100") == 0 || strcmp(buff, "#---DATA---") == 0) {
-			continue;
-		}
-
-		if (strcmp(buff, "#END") == 0) {
-			*count_stud = prm;
-			break;
-		}
-
-		studenti[prm].student = strtok(buff, ":");
-		studenti[prm].cviceni = strtok(NULL, ":");
-		studenti[prm].testy = strtok(NULL, ":");
-		studenti[prm].skuska = strtok(NULL, ":");
-		studenti[prm].stud_id_string = strtok(NULL, ":");
-
-
-		strcpy(studenti[prm].student_str, studenti[prm].student);
-		strcpy(studenti[prm].cviceni_str, studenti[prm].cviceni);
-		strcpy(studenti[prm].testy_str, studenti[prm].testy);
-		strcpy(studenti[prm].skuska_str, studenti[prm].skuska);
-		strcpy(studenti[prm].stud_id_str, studenti[prm].stud_id_string);
-
-		// konverzia na na int
-		studenti[prm].studID_int = atoi(studenti[prm].stud_id_string);
-		studenti[prm].cviceni_int = atoi(studenti[prm].cviceni);
-		studenti[prm].testy_int = atoi(studenti[prm].testy);
-		studenti[prm].skuska_int = atoi(studenti[prm].skuska);
-
-		prm++;
-	}
-}
-
-void zapis_subor(struct student* studenti, int pct_stud, char *predmet) {
-
-	FILE* fptr = fopen("subjects_temp.txt", "r");
-
-	if (fptr) {
-		// Existuje
-		fclose(fptr);
-		fptr = fopen("subjects_temp.txt", "a");
-	}
-	else {
-		// Neexistuje
-		fptr = fopen("subjects_temp.txt", "w+");
-	}
-
-	if (!fptr) {
-		perror("Chyba: nepodarilo sa otvorit alebo vytvorit subjects_temp.txt");
+	/*if (pocet_stud == 0) {
+		printf("Zoznam studentov je prazdny!\n\n");
 		return;
 	}
 
-	fprintf(fptr, "#PREDMET:");
-	fprintf(fptr, "%s\n", predmet);
-	fprintf(fptr, "#MAX_BODY:100\n");
-	fprintf(fptr, "#---DATA---\n");
+	int index;
+	printf("Zadaj index studenta na vymazanie (0 - %d): ", pocet_stud - 1);
+	scanf("%d", &index);
 
-	for (int i = 0; i < pct_stud; i++) {
-		fprintf(fptr, "%s:%d:%d:%d:%d:\n",
-			studenti[i].student_str,
-			studenti[i].cviceni_int,
-			studenti[i].testy_int,
-			studenti[i].skuska_int,
-			studenti[i].studID_int);
+	if (index < 0 || index >= pocet_stud) {
+		printf("Neplatny index!\n\n");
+		return;
 	}
 
-
-
-	fprintf(fptr, "#END\n\n");
-
-
-	fclose(fptr);
-
-
-
-}
-
-void update_subor() {
-
-	const char* filename = "subjects.txt";
-
-	if (remove(filename) == 0) {
-		printf("Subor zmazany uspesne.\n");
-	}
-	else {
-		perror("Chyba pri mazani suboru");
+	// posunutie pola doľava
+	for (int i = index; i < pocet_stud - 1; i++) {
+		zoznam[i] = zoznam[i + 1];
 	}
 
-	const char* stary = "subjects_temp.txt";
-	const char* novy = "subjects_novy.txt";
+	pocet_stud--;
+	printf("Student bol vymazany!\n\n");*/
+};
 
-	if (rename(stary, novy) == 0) {
-		printf("Subor premenovany uspesne.\n");
-	}
-	else {
-		perror("Chyba pri premenovani suboru");
-	}
-
-
-}
+void zmena_max_bodov(){
+	printf("Zatial sa neda :)\n\n");
+};
