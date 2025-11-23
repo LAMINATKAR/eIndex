@@ -35,9 +35,9 @@ struct student {
 
 int overenie();
 int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]);
-void zapis_znamok(char predmet[POCET_PREDMET][DLZKA_STRING], /*char predmet_txt[POCET_PREDMET][DLZKA_STRING],*/ int vybr_predmet, struct student* studenti, int pct_stud);
-int zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], /*char predmety_txt[POCET_PREDMET][DLZKA_STRING],*/ int vybr_predmet, struct student* studenti, int pct_stud);
-void edit_predmetu();
+void zapis_znamok(char predmet[POCET_PREDMET][DLZKA_STRING], int vybr_predmet, struct student* studenti, int* pct_stud);
+void zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], int vybr_predmet, struct student* studenti, int *pct_stud);
+void edit_predmetu(char predmety[POCET_PREDMET][DLZKA_STRING], int vybr_predmet, struct student* studenti, int *pct_stud);
+void pridanie_stud(struct student* studenti, int* pct_stud);
+void vymazanie_stud(struct student* studenti, int* pct_stud);
 void zmena_max_bodov();
-void pridanie_stud();
-void vymazanie_stud();

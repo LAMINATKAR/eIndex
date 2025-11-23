@@ -19,6 +19,8 @@ int main()
 
 	int pct_stud_aktual[5];
 
+	int max_body[POCET_PREDMET] = {0};
+
 	fill_strukt(stud_kom, 0, &pct_stud_aktual[0]); 
 	fill_strukt(stud_ma1, 1, &pct_stud_aktual[1]); 
 	fill_strukt(stud_pc1t, 2, &pct_stud_aktual[2]);
@@ -32,7 +34,6 @@ int main()
 	}*/
 	//printf(" pocet studentov: %d", pct_stud_aktual[2])
 
-
 	// len sem si skusal si funguje
 	//printf("pocet studentov kom:%d", pct_stud); nic
 
@@ -45,14 +46,6 @@ int main()
     	"BPC-PNA",
     	"\0"
     };
-	char predmet_txt[POCET_PREDMET][DLZKA_STRING] = {
-		"BPC-MAT1.txt",
-		"BPC-ZKR.txt",
-		"BPC-PC1T.txt",
-		"BPC-KOM.txt",
-		"BPC-PNA.txt",
-		"\0"
-	};
 
 	printf("\n=== ELEKTRONICKY INDEX ===\n");
 
@@ -70,23 +63,23 @@ int main()
 			switch(vybr_predmet) {
 				case 0:
 					//MA1
-					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_ma1, pct_stud_aktual[1]);
+					zapis_znamok(predmet, vybr_predmet, stud_ma1, &pct_stud_aktual[1]);
 					break;
 				case 1:
 					//ZKR
-					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_zkr, pct_stud_aktual[4]);
+					zapis_znamok(predmet, vybr_predmet, stud_zkr, &pct_stud_aktual[4]);
 					break;
 				case 2:
 					//PC1T
-					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_pc1t, pct_stud_aktual[2]);
+					zapis_znamok(predmet, vybr_predmet, stud_pc1t, &pct_stud_aktual[2]);
 					break;
 				case 3:
 					//KOM
-					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_kom, pct_stud_aktual[0]);
+					zapis_znamok(predmet, vybr_predmet, stud_kom, &pct_stud_aktual[0]);
 					break;
 				case 4:
 					//PNA
-					zapis_znamok(predmet, predmet_txt, vybr_predmet, stud_pna, pct_stud_aktual[3]);
+					zapis_znamok(predmet, vybr_predmet, stud_pna, &pct_stud_aktual[3]);
 					break;
 				default:
 					valid_case = 0;
