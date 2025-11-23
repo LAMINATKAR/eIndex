@@ -136,8 +136,8 @@ int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
 	return indexy_povolene[volba_predm-1];
 }
 
-void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int* pct_stud) {
-	zobraz_vysledky(predmety, predmet, studenti, pct_stud); // zobrazenie zoznamu studentov
+void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int* pct_stud, int* max_body) {
+	zobraz_vysledky(predmety, predmet, studenti, pct_stud, max_body); // zobrazenie zoznamu studentov
 
 	int vybrany_student = -1;
 
@@ -149,10 +149,10 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, struc
 		//printf("vybrany student cislo: %d", vybrany_student);
 
 		if (vybrany_student < 0 || vybrany_student > *pct_stud) {
-			printf("\nNespravna volba! skuste znova.\n");
+			printf("\nNespravna volba! Skuste znova.\n");
 		}
 		else if (vybrany_student == 0) {
-			edit_predmetu(predmety, predmet, studenti, pct_stud);
+			edit_predmetu(predmety, predmet, studenti, pct_stud, max_body);
 			//fclose(fptr);
 			return;
 		}
@@ -166,7 +166,7 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, struc
 		printf("\nPridat body za: \n1.cvicenie \n2.test \n3.skusku\n0.zrusit\nVolba: ");
 		scanf_s("%d", &body_volba);
 		if (body_volba < 0 || body_volba > 3) {
-			printf("Nespravna volba! Skuste znova.\n\n");
+			printf("Nespravna volba! Skuste znova.\n");
 		}
 		else {
 			break; // ukonci while(1)
@@ -188,52 +188,20 @@ void zapis_znamok(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, struc
     //fclose(fptr);
 }
 
-void zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int* pct_stud) {
+void zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int* pct_stud, int* max_body) {
 
 	printf("Vybrany predmet: %s\n", predmety[predmet]);
 
-	FILE* fptr = fopen("subjects.txt", "r");
-	if (fptr == NULL) {
-		printf("Chyba: nepodarilo sa otvorit súbor subjects.txt");
-		return;
-	}
-
-	char riadok[DLZKA_STRING];
-	int max_body = 0;
-
-	// načítanie max. bodov
-	while (fgets(riadok, sizeof(riadok), fptr)) {
-		riadok[strcspn(riadok, "\r\n")] = 0;
-		
-		if(strcmp(riadok + 9, predmety[predmet]) != 0){
-			continue;
-		}
-		else {
-			fgets(riadok, sizeof(riadok), fptr);
-			riadok[strcspn(riadok, "\r\n")] = 0;
-			max_body = atoi(riadok + 10);
-			break;
-		}
-
-		/*if (strncmp(riadok, "#MAX_BODY:", 10) == 0) {
-			max_body = atoi(riadok + 10);
-		} else if (strncmp(riadok, "#---DATA---", 11) == 0) {
-			break;
-		}*/
-	}
-
 	printf("Maximalny pocet bodov: ");
-	if (max_body <= 0) {
+	if (*max_body <= 0) {
 		printf("Nedefinovany!\n");
 	}
 	else {
-		printf("%d\n", max_body);
+		printf("%d\n", *max_body);
 	}
 
 	printf("\n%-4s %-20s %-10s %-10s %-10s %-10s %-10s\n", "ID", "Meno", "Cvicenia", "Testy", "Skuska", "Spolu", "Znamka");
 	printf("----------------------------------------------------------------------------------------\n");
-
-	/*hali nove*/
 
 	int spolu;
 	float percenta;
@@ -241,7 +209,7 @@ void zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, st
 
 	for (int i = 0; i < *pct_stud; i++) {
 		spolu = studenti[i].cviceni_int + studenti[i].testy_int + studenti[i].skuska_int;
-		percenta = (float)spolu / max_body * 100.0f;
+		percenta = (float)spolu / *max_body * 100.0f;
 
 		if (percenta >= ZN_A) znamka = 'A';
 		else if (percenta >= ZN_B) znamka = 'B';
@@ -253,21 +221,14 @@ void zobraz_vysledky(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, st
 		printf("%-4d %-20s %-10d %-10d %-10d %-10d %-10c\n", i+1, studenti[i].student_str, studenti[i].cviceni_int, studenti[i].testy_int, studenti[i].skuska_int, spolu, znamka);
 	}
 
-	// DEBUG vypis
-	//printf("\npocet studentov vo zobraz vysledky: %d\n", pct_stud);
-	//spolu = studenti[].cvicenia_int + testy_int + skuska_int;
-
 	if (*pct_stud <= 0) {
 		printf("!    V tomto predmete nie su ziadni studenti!\n");
 	}
 	printf("%-4d Odist/Upravit predmet\n", 0);
 
-	fclose(fptr);
-	//vycistenie();
-
 }
 
-void edit_predmetu(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int* pct_stud) {
+void edit_predmetu(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, struct student* studenti, int* pct_stud, int* max_body) {
 	int volba_upravy = -1;
 
 	while (1) {
@@ -291,7 +252,7 @@ void edit_predmetu(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, stru
 					vymazanie_stud(studenti, pct_stud);
 					break;
 				case 3:
-					zmena_max_bodov(predmet, max_body);
+					zmena_max_bodov(predmety, predmet, max_body);
 					break;
 			}
 
@@ -362,6 +323,24 @@ void vymazanie_stud(struct student* studenti, int* pct_stud){
 	printf("Student bol uspesne vymazany.\n");
 };
 
-void zmena_max_bodov(){
-	printf("Zatial sa neda :)\n\n");
-};
+void zmena_max_bodov(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, int* max_body){
+	int nove_body;
+
+	while (1) {
+		printf("\nAktualny pocet maximalnych bodov pre predmet %s: %d\n", predmety[predmet], *max_body);
+		printf("Zadajte novy pocet maximalnych bodov: ");
+		scanf_s("%d", &nove_body);
+
+		if (nove_body < 0) {
+			printf("Nespravna volba! Skuste znova.\n");
+			//return;
+		}
+		else {
+			break;
+		}
+	}
+
+	*max_body = nove_body;
+
+	printf("Maximalne body pre predmet %s boli uspesne zmenene.\n", predmety[predmet]);
+}

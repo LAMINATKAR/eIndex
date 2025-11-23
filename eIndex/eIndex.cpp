@@ -21,13 +21,17 @@ int main()
 
 	int max_body[POCET_PREDMET] = {0};
 
-	fill_strukt(stud_kom, 0, &pct_stud_aktual[0]); 
-	fill_strukt(stud_ma1, 1, &pct_stud_aktual[1]); 
-	fill_strukt(stud_pc1t, 2, &pct_stud_aktual[2]);
-	fill_strukt(stud_pna, 3, &pct_stud_aktual[3]); 
-	fill_strukt(stud_zkr, 4, &pct_stud_aktual[4]);
+	fill_strukt(stud_kom, 0, &pct_stud_aktual[0], max_body);
+	fill_strukt(stud_ma1, 1, &pct_stud_aktual[1], max_body);
+	fill_strukt(stud_pc1t, 2, &pct_stud_aktual[2], max_body);
+	fill_strukt(stud_pna, 3, &pct_stud_aktual[3], max_body);
+	fill_strukt(stud_zkr, 4, &pct_stud_aktual[4], max_body);
 
-	 //testy
+	// DEBUG vypisy
+	/*printf("\n=== DEBUG: Predmety a max body ===\n");
+	for (int i = 0; i < POCET_PREDMET; i++) {
+		printf("%d) max_body=%d\n", i, max_body[i]);
+	}*/
 	/*printf("\npocet student v 1: %d\n", pct_stud_aktual[4]);
 	for (int ii = 0; ii < pct_stud_aktual[4] ; ii++) {
 		printf("%s %d %d %d\n", stud_zkr[ii].student_str, stud_zkr[ii].cviceni_int, stud_zkr[ii].testy_int, stud_zkr[ii].skuska_int);
@@ -63,23 +67,23 @@ int main()
 			switch(vybr_predmet) {
 				case 0:
 					//MA1
-					zapis_znamok(predmet, vybr_predmet, stud_ma1, &pct_stud_aktual[1]);
+					zapis_znamok(predmet, vybr_predmet, stud_ma1, &pct_stud_aktual[1], &max_body[1]);
 					break;
 				case 1:
 					//ZKR
-					zapis_znamok(predmet, vybr_predmet, stud_zkr, &pct_stud_aktual[4]);
+					zapis_znamok(predmet, vybr_predmet, stud_zkr, &pct_stud_aktual[4], &max_body[4]);
 					break;
 				case 2:
 					//PC1T
-					zapis_znamok(predmet, vybr_predmet, stud_pc1t, &pct_stud_aktual[2]);
+					zapis_znamok(predmet, vybr_predmet, stud_pc1t, &pct_stud_aktual[2], &max_body[2]);
 					break;
 				case 3:
 					//KOM
-					zapis_znamok(predmet, vybr_predmet, stud_kom, &pct_stud_aktual[0]);
+					zapis_znamok(predmet, vybr_predmet, stud_kom, &pct_stud_aktual[0], &max_body[0]);
 					break;
 				case 4:
 					//PNA
-					zapis_znamok(predmet, vybr_predmet, stud_pna, &pct_stud_aktual[3]);
+					zapis_znamok(predmet, vybr_predmet, stud_pna, &pct_stud_aktual[3], &max_body[3]);
 					break;
 				default:
 					valid_case = 0;
@@ -96,11 +100,11 @@ int main()
 				getchar(); // čaká na stlačenie Enter
 
 				//for(int y=0; i < POCET_PREDMET; i++)
-				zapis_subor(stud_kom, pct_stud_aktual[0], predmet[3]);
-				zapis_subor(stud_ma1, pct_stud_aktual[1], predmet[0]);
-				zapis_subor(stud_pc1t, pct_stud_aktual[2], predmet[2]);
-				zapis_subor(stud_pna, pct_stud_aktual[3], predmet[4]);
-				zapis_subor(stud_zkr, pct_stud_aktual[4], predmet[1]);
+				zapis_subor(stud_kom, pct_stud_aktual[0], predmet[3], max_body[0]);
+				zapis_subor(stud_ma1, pct_stud_aktual[1], predmet[0], max_body[1]);
+				zapis_subor(stud_pc1t, pct_stud_aktual[2], predmet[2], max_body[2]);
+				zapis_subor(stud_pna, pct_stud_aktual[3], predmet[4], max_body[3]);
+				zapis_subor(stud_zkr, pct_stud_aktual[4], predmet[1], max_body[4]);
 
 				update_subor();
 

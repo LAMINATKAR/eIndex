@@ -18,7 +18,7 @@ unsigned long simple_hash(const char *str) {
 	return hash;
 }
 
-void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud) {
+void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud, int max_body[POCET_PREDMET]) {
 	FILE* fptr = fopen("subjects.txt", "r");
 
 	if (fptr == NULL) {
@@ -60,9 +60,12 @@ void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud) {
 	while (fgets(buff, DLZKA_STRING, fptr)) {
 		buff[strcspn(buff, "\n")] = 0;
 
-		if (strncmp(buff, "#MAX_BODY:", 10) == 0 || strcmp(buff, "#---DATA---") == 0) {
+		if (strncmp(buff, "#MAX_BODY:", 10) == 0) {
+			max_body[predm_cislo] = atoi(buff + 10);
 			continue;
 		}
+
+		if (strcmp(buff, "#---DATA---") == 0) continue;
 
 		if (strcmp(buff, "#END") == 0) {
 			*count_stud = prm;
@@ -74,7 +77,6 @@ void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud) {
 		studenti[prm].testy = strtok(NULL, ":");
 		studenti[prm].skuska = strtok(NULL, ":");
 		studenti[prm].stud_id_string = strtok(NULL, ":");
-
 
 		strcpy(studenti[prm].student_str, studenti[prm].student);
 		strcpy(studenti[prm].cviceni_str, studenti[prm].cviceni);
@@ -92,7 +94,7 @@ void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud) {
 	}
 }
 
-void zapis_subor(struct student* studenti, int pct_stud, char *predmet) {
+void zapis_subor(struct student* studenti, int pct_stud, char *predmet, int max_body) {
 
 	FILE* fptr = fopen("subjects_temp.txt", "r");
 
@@ -111,9 +113,8 @@ void zapis_subor(struct student* studenti, int pct_stud, char *predmet) {
 		return;
 	}
 
-	fprintf(fptr, "#PREDMET:");
-	fprintf(fptr, "%s\n", predmet);
-	fprintf(fptr, "#MAX_BODY:100\n");
+	fprintf(fptr, "#PREDMET:%s\n", predmet);
+	fprintf(fptr, "#MAX_BODY:%d\n", max_body);
 	fprintf(fptr, "#---DATA---\n");
 
 	for (int i = 0; i < pct_stud; i++) {
