@@ -17,7 +17,7 @@ int main()
 	struct student stud_pna[POCET_STUDENT];
 	struct student stud_zkr[POCET_STUDENT];
 
-	int pct_stud_aktual[5];
+	int pct_stud_aktual[POCET_PREDMET];
 
 	int max_body[POCET_PREDMET] = {0};
 
@@ -26,21 +26,6 @@ int main()
 	fill_strukt(stud_pc1t, 2, &pct_stud_aktual[2], max_body);
 	fill_strukt(stud_pna, 3, &pct_stud_aktual[3], max_body);
 	fill_strukt(stud_zkr, 4, &pct_stud_aktual[4], max_body);
-
-	// DEBUG vypisy
-	/*printf("\n=== DEBUG: Predmety a max body ===\n");
-	for (int i = 0; i < POCET_PREDMET; i++) {
-		printf("%d) max_body=%d\n", i, max_body[i]);
-	}*/
-	/*printf("\npocet student v 1: %d\n", pct_stud_aktual[4]);
-	for (int ii = 0; ii < pct_stud_aktual[4] ; ii++) {
-		printf("%s %d %d %d\n", stud_zkr[ii].student_str, stud_zkr[ii].cviceni_int, stud_zkr[ii].testy_int, stud_zkr[ii].skuska_int);
-	}*/
-	//printf(" pocet studentov: %d", pct_stud_aktual[2])
-
-	// len sem si skusal si funguje
-	//printf("pocet studentov kom:%d", pct_stud); nic
-
 
     char predmet[POCET_PREDMET][DLZKA_STRING] = {
 	    "BPC-MA1",

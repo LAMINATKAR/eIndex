@@ -1,8 +1,9 @@
 #pragma once
 
 // databazove subory
-/*const char* users_file = "users.txt";
-const char* subjects_file = "subjects.txt";*/
+#define USERS_FILE "users.txt"
+#define SUBJECTS_FILE "subjects.txt"
+#define SUBJECTS_TEMP_FILE "subjects_temp.txt"
 
 // konstanty programu
 const int POCET_PREDMET = 6;

@@ -28,16 +28,16 @@ int overenie()
 
 		if (usnm != NULL) {
 			FILE* fptr;
-			fptr = fopen("users.txt", "r");
+			fptr = fopen(USERS_FILE, "r");
 			if (fptr == NULL) {
-				perror("Chyba pri otvarani suboru users.txt");
+				perror("Chyba pri otvarani suboru USERS_FILE");
 				return 1;
 			}
 
-			char buff[DLZKA_STRING*2];
+			char buff[DLZKA_STRING];
 
 			// Reading strings till fgets returns NULL
-			while (fgets(buff, DLZKA_STRING*2, fptr)) {
+			while (fgets(buff, DLZKA_STRING, fptr)) {
 				char file_meno[DLZKA_STRING];
 				char file_heslo[DLZKA_STRING];
 				char file_predmety[DLZKA_STRING];
@@ -320,7 +320,7 @@ void vymazanie_stud(struct student* studenti, int* pct_stud){
 	}
 
 	(*pct_stud)--;
-	printf("Student bol uspesne vymazany.\n");
+	printf("Zvoleny student bol uspesne vymazany.\n");
 };
 
 void zmena_max_bodov(char predmety[POCET_PREDMET][DLZKA_STRING], int predmet, int* max_body){

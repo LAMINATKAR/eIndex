@@ -50,11 +50,12 @@ Jana Kovacova:0:0:0:0:
 #END
 
 #PREDMET:BPC-ZKR
-#MAX_BODY:100
+#MAX_BODY:75
 #---DATA---
-Tomas Valach:0:0:0:0:
-Eva Sustekova:0:0:0:0:
-Roman Bielik:0:0:0:0:
+Tomas Valach:50:20:0:0:
+Eva Sustekova:70:0:0:0:
+Roman Bielik:0:0:50:0:
 Katarina Holubova:0:0:0:0:
 Michal Gresko:0:0:0:0:
 #END
+

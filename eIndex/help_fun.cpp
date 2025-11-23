@@ -1,7 +1,6 @@
 #include "general_fun.h"
 #include <stdio.h>
 #include <string.h>
-#include <process.h>
 #include <iostream>
 
 void vycistenie() {
@@ -19,10 +18,10 @@ unsigned long simple_hash(const char *str) {
 }
 
 void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud, int max_body[POCET_PREDMET]) {
-	FILE* fptr = fopen("subjects.txt", "r");
+	FILE* fptr = fopen(SUBJECTS_FILE, "r");
 
 	if (fptr == NULL) {
-		printf("Chyba: nepodarilo sa otvorit subor subjects.txt\n");
+		printf("Chyba: nepodarilo sa otvorit subor SUBJECTS_FILE\n");
 		return;
 	}
 
@@ -92,24 +91,14 @@ void fill_strukt(struct student* studenti, int predm_cislo, int *count_stud, int
 
 		prm++;
 	}
+	fclose(fptr);
 }
 
 void zapis_subor(struct student* studenti, int pct_stud, char *predmet, int max_body) {
-
-	FILE* fptr = fopen("subjects_temp.txt", "r");
-
-	if (fptr) {
-		// Existuje
-		fclose(fptr);
-		fptr = fopen("subjects_temp.txt", "a");
-	}
-	else {
-		// Neexistuje
-		fptr = fopen("subjects_temp.txt", "w+");
-	}
+	FILE* fptr = fopen(SUBJECTS_TEMP_FILE, "a");
 
 	if (!fptr) {
-		perror("Chyba: nepodarilo sa otvorit alebo vytvorit subjects_temp.txt");
+		perror("Chyba: nepodarilo sa otvorit alebo vytvorit SUBJECTS_TEMP_FILE");
 		return;
 	}
 
@@ -128,29 +117,20 @@ void zapis_subor(struct student* studenti, int pct_stud, char *predmet, int max_
 
 	fprintf(fptr, "#END\n\n");
 	fclose(fptr);
-
 }
 
 void update_subor() {
+	const char* original = SUBJECTS_FILE;
+	const char* temp = SUBJECTS_TEMP_FILE;
 
-	const char* filename = "subjects.txt";
-
-	if (remove(filename) == 0) {
-		printf("Subor zmazany uspesne.\n");
-	}
-	else {
-		perror("Chyba pri mazani suboru");
+	if (remove(original) != 0) {
+		perror("Chyba pri mazani SUBJECTS_FILE");
+		// aj tak pokracujeme, mozno neexistoval
 	}
 
-	const char* stary = "subjects_temp.txt";
-	const char* novy = "subjects_novy.txt";
-
-	if (rename(stary, novy) == 0) {
-		printf("Subor premenovany uspesne.\n");
+	if (rename(temp, original) != 0) {
+		perror("Chyba pri premenovani SUBJECTS_TEMP_FILE na SUBJECTS_FILE");
+	} else {
+		printf("Databaza bola uspesne aktualizovana.\n");
 	}
-	else {
-		perror("Chyba pri premenovani suboru");
-	}
-
-
 }
