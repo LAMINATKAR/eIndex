@@ -114,7 +114,16 @@ int vyber_predmetu(char predmet[POCET_PREDMET][DLZKA_STRING]) {
 		}
 		printf("0) Ulozit zmeny a ukoncit program\n");
 		printf("Volba: ");
-		scanf_s("%d", &volba_predm);
+
+		while (1) {
+			if (scanf_s("%d", &volba_predm) != 1) {
+				printf("Zadany vstup nie je cislo! Skuste znova: ");
+				while (getchar() != '\n');  
+				continue;                   
+			}
+			while (getchar() != '\n');
+			break;  
+		}
 
 		if (volba_predm < 0 || volba_predm > pocet_povolene) {
 			printf("Nespravna volba! Skuste znova.\n\n");
